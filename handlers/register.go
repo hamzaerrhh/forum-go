@@ -28,12 +28,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		_, err := database.Database.Exec(
-			"INSERT INTO users (userName, email, password) VALUES (?, ?, ?)",
+			"INSERT INTO USERS (name, email, password) VALUES (?, ?, ?)",
 			user.Name,
 			user.Email,
 			user.Password,
 		)
+		// create session if you want to redirect to its page
 		if err != nil {
+			// log.Println(err.Error())
 			HandleError(w, 500, "Internal Server Error")
 			return
 		}

@@ -22,9 +22,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		var dbPassword, userName string
 		err := database.Database.QueryRow(
-			"SELECT password, userName FROM users WHERE email = ?",
+			"SELECT name, password FROM USERS WHERE email = ?",
 			email,
-		).Scan(&dbPassword, &userName)
+		).Scan(&userName, &dbPassword)
 		if err == sql.ErrNoRows {
 			HandleError(w, 401, "User not found")
 			return
@@ -40,11 +40,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sessionID := uuid.NewString()
+		sessionID := uuid.NewString() // unique ?
 		_, err = database.Database.Exec(
-			"UPDATE users SET session = ?, dateexpired = DATETIME('now', '+24 hours') WHERE email = ?",
+			"INSERT INTO SESSIONS (id, expires_at, user_id) VALUES (?, DATETIME('now', '+24 hours'), (SELECT id FROM USERS WHERE email = ?))",
 			sessionID, email,
 		)
+		// _, err = database.Database.Exec(
+		// 	"UPDATE users SET session = ?, dateexpired = DATETIME('now', '+24 hours') WHERE email = ?",
+		// 	sessionID, email,
+		// )
 		if err != nil {
 			HandleError(w, 500, "Server error")
 			return

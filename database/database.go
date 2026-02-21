@@ -27,7 +27,7 @@ func Init() error {
 		return fmt.Errorf("can't read schema: %v", err)
 	}
 
-	_, err = Database.Exec(string(schema))
+	_, err = Database.Exec(string(schema)) // seeder
 	if err != nil {
 		return fmt.Errorf("schema execution failed: %v", err)
 	}

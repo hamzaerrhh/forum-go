@@ -10,7 +10,7 @@ import (
 )
 
 // Serves the CSS file
-func CssHandler(w http.ResponseWriter, r *http.Request) {
+func Styles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/css")
 	http.ServeFile(w, r, "assets/styles.css")
 }
@@ -72,7 +72,7 @@ func Forum(w http.ResponseWriter, r *http.Request) {
 func getUser(sessionId string) (User, error) {
 	var user User
 	err := database.Database.QueryRow(
-		"SELECT userName, email, password FROM users WHERE session = ? AND dateexpired > DATETIME('now')",
+		"SELECT u.name, u.email, u.password FROM USERS u INNER JOIN SESSIONS s ON s.user_id = u.id WHERE s.id = ? AND s.expires_at > DATETIME('now')",
 		sessionId,
 	).Scan(&user.Name, &user.Email, &user.Password)
 	return user, err
