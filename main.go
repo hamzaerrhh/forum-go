@@ -2,24 +2,29 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"forum/database"
 	"forum/handlers"
+	"forum/middlewares"
 )
 
 func main() {
 	if err := database.Init(); err != nil {
-		fmt.Println(err)
+		log.Fatalf("Database initialization failed: %v", err)
 	}
 
-	http.HandleFunc("/", handlers.Forum)
-	http.HandleFunc("/register", handlers.Register)
-	http.HandleFunc("/login", handlers.Login)
-	http.HandleFunc("/logout", handlers.Logout)
+	http.HandleFunc("/", handlers.Forum) // use middleware when separated to home & feed
+	http.HandleFunc("/register", middlewares.CheckSessionCookie(handlers.Register, false))
+	http.HandleFunc("/login", middlewares.CheckSessionCookie(handlers.Login, false))
+	http.HandleFunc("/logout", middlewares.CheckSessionCookie(handlers.Logout, true))
 
 	http.HandleFunc("/static/styles.css", handlers.Styles)
+	// http.HandleFunc("/static/", zone.HandleStatic)
 
 	fmt.Println("Server running on http://0.0.0.0:8080")
-	http.ListenAndServe(":8080", nil)
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
+	}
 }

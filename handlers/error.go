@@ -7,24 +7,29 @@ import (
 )
 
 // HandleError renders an error page with the given status and message
-func HandleError(w http.ResponseWriter, status int, message string) {
-	tmpl, err := template.ParseFiles("templates/error.html")
+func HandleError(w http.ResponseWriter, code int, message string) {
+	// 	w.WriteHeader(code)
+
+	t, err := template.ParseFiles("templates/error.html")
 	if err != nil {
-		http.Error(w, "Internal Server Error", 500)
+		http.Error(w, "Critical template error", http.StatusInternalServerError) // "Internal Server Error"
+		return
 	}
+
 	data := struct {
+		Code    int
 		Message string
-		Status  int
 	}{
+		Code:    code,
 		Message: message,
-		Status:  status,
 	}
 
 	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, data); err != nil {
+	if err := t.Execute(&buf, data); err != nil {
 		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+		// log.Printf("error template execute error: %v", err)
 		return
 	}
-	w.WriteHeader(status)
+	w.WriteHeader(code)
 	buf.WriteTo(w)
 }

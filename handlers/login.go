@@ -1,13 +1,16 @@
 package handlers
 
 import (
-	"database/sql"
 	"html/template"
+	"log"
 	"net/http"
+	"strings"
+	"time"
 
 	"forum/database"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -16,41 +19,57 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Method == http.MethodPost {
-		email := r.FormValue("email")
+	switch r.Method {
+	case http.MethodGet:
+		t, err := template.ParseFiles("templates/login.html")
+		if err != nil {
+			HandleError(w, http.StatusInternalServerError, "Template error")
+			return
+		}
+		if err := t.Execute(w, nil); err != nil {
+			log.Printf("login template execute error: %v", err)
+		}
+
+	case http.MethodPost:
+		email := strings.TrimSpace(r.FormValue("email"))
 		password := r.FormValue("password")
 
-		var dbPassword, userName string
+		// Basic input validation
+		if email == "" || password == "" {
+			HandleError(w, http.StatusBadRequest, "Email and password are required")
+			return
+		}
+
+		var userID int
+		var hashedPassword string
+
 		err := database.Database.QueryRow(
-			"SELECT name, password FROM USERS WHERE email = ?",
-			email,
-		).Scan(&userName, &dbPassword)
-		if err == sql.ErrNoRows {
-			HandleError(w, 401, "User not found")
-			return
-		}
-		if err != nil {
-			HandleError(w, 500, "User not found")
+			"SELECT id, password FROM users WHERE email = ?", email,
+		).Scan(&userID, &hashedPassword)
+		if err != nil { // sql.ErrNoRows
+			// Don't reveal whether email exists or not
+			HandleError(w, http.StatusUnauthorized, "Invalid email or password") // 401 ?
 			return
 		}
 
-		if password != dbPassword {
-			HandleError(w, 401, "Wrong password")
-
+		if err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)); err != nil {
+			HandleError(w, http.StatusUnauthorized, "Invalid email or password") // 401
 			return
 		}
 
-		sessionID := uuid.NewString() // unique ?
+		/////////////////////////
+		// Need a mechanism to remove expired sessions from database (from time to time ?!)
+		/////////////////////////
+
+		sessionID := uuid.New().String()             // OR: uuid.NewString() // unique ?
+		expiration := time.Now().Add(24 * time.Hour) // DATETIME('now', '+24 hours')
+
 		_, err = database.Database.Exec(
-			"INSERT INTO SESSIONS (id, expires_at, user_id) VALUES (?, DATETIME('now', '+24 hours'), (SELECT id FROM USERS WHERE email = ?))",
-			sessionID, email,
+			"INSERT INTO SESSIONS (id, expires_at, user_id) VALUES (?, ?, ?)",
+			sessionID, expiration, userID,
 		)
-		// _, err = database.Database.Exec(
-		// 	"UPDATE users SET session = ?, dateexpired = DATETIME('now', '+24 hours') WHERE email = ?",
-		// 	sessionID, email,
-		// )
 		if err != nil {
-			HandleError(w, 500, "Server error")
+			HandleError(w, http.StatusInternalServerError, "Server error") // message
 			return
 		}
 
@@ -59,17 +78,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			Value:    sessionID,
 			Path:     "/",
 			HttpOnly: true,
+			Expires:  expiration,
 		})
-
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
 
-	tmpl, err := template.ParseFiles("templates/login.html")
-	if err != nil {
-		HandleError(w, 500, "Template error")
-		return
+	default:
+		HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 	}
-
-	tmpl.Execute(w, nil)
 }

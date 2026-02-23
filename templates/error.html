@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Error {{.Code}}</title>
+    <!-- <link rel="stylesheet" href="/static/style.css"> -->
 </head>
 <body>
-    <h1>{{.Status}}</h1>
-    <h1>{{.Message}}</h1>
+
+    <div class="card error-card">
+        <h1>{{.Code}}</h1> <!-- or status -->
+        <p>{{.Message}}</p>
+        <a href="/">← Back to Home</a>
+    </div>
+
 </body>
 </html>

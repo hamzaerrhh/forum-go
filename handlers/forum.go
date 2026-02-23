@@ -9,11 +9,36 @@ import (
 	"forum/database"
 )
 
+// func HandleStatic(w http.ResponseWriter, r *http.Request) {
+// 	if r.URL.Path == "/static" || r.URL.Path == "/static/" {
+// 		HandleError(w, http.StatusNotFound, "Not Found")
+// 		return
+// 	}
+
+// 	filePath := filepath.Join("static", r.URL.Path[len("/static/"):])
+
+// 	// Prevent path traversal (e.g. /static/../../secret)
+// 	cleanPath := filepath.Clean(filePath)
+// 	if len(cleanPath) < len("static") || cleanPath[:len("static")] != "static" {
+// 		HandleError(w, http.StatusForbidden, "Forbidden")
+// 		return
+// 	}
+
+// 	if _, err := os.Stat(filePath); err != nil {
+// 		HandleError(w, http.StatusNotFound, "Not Found")
+// 		return
+// 	}
+
+// 	http.ServeFile(w, r, filePath)
+// }
+
 // Serves the CSS file
 func Styles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/css")
 	http.ServeFile(w, r, "assets/styles.css")
 }
+
+// =======================================================================
 
 type TemplateData struct {
 	IsLoggedIn bool
@@ -21,33 +46,41 @@ type TemplateData struct {
 }
 
 func Forum(w http.ResponseWriter, r *http.Request) {
-	// 1. check path
-	// 2. check method
+	if r.URL.Path != "/" { // root dir or something else
+		HandleError(w, http.StatusNotFound, "Page not found")
+		return
+	}
+	if r.Method != http.MethodGet {
+		HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
+		return
+	}
 
 	t, err := template.ParseFiles("templates/index.html")
 	if err != nil {
-		HandleError(w, 500, "Template error")
+		HandleError(w, http.StatusInternalServerError, "Template error")
 		return
 	}
 
 	var buf bytes.Buffer
 	cookie, err := r.Cookie("session_id")
 	if err != nil { // http.ErrNoCookie
-		// serve dashboard with no connection
-		t.Execute(&buf, TemplateData{}) // + check error
+		if err := t.Execute(&buf, nil); err != nil {
+			log.Printf("home template execute error: %v", err)
+			return // ?
+		}
+		// nil works fine without using: TemplateData{}
 		buf.WriteTo(w)
-
 		return
 	}
 
-	// var user User
 	user, err := getUser(cookie.Value)
 	if err != nil { // sql.ErrNoRows
 		// what is the default behavior when session cookie not found -> serve as not logged in ?
-		t.Execute(&buf, TemplateData{}) // + check error
+		if err := t.Execute(&buf, nil); err != nil {
+			log.Printf("home template execute error: %v", err)
+			return // ?
+		}
 		buf.WriteTo(w)
-
-		// http.Redirect(w, r, "/Login", http.StatusSeeOther)
 		return
 	}
 
@@ -57,7 +90,7 @@ func Forum(w http.ResponseWriter, r *http.Request) {
 	}
 	err = t.Execute(&buf, data)
 	if err != nil {
-		log.Println("Error executing template.")
+		log.Println(err)
 		HandleError(w, http.StatusInternalServerError, "Internal server error")
 		// send err.Error() as message !
 		return

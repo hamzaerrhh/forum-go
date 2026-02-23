@@ -1,26 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <!-- <link rel="stylesheet" href="/static/style.css"> -->
 </head>
 <body>
 
-<h1>Login</h1>
+    <div class="card">
+        <h1>Login</h1>
+        <p class="subtitle">Welcome back</p>
 
-<form action="/login" method="POST">
+        <form action="/login" method="POST">
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" required autocomplete="email">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit">Login</button>
+        </form>
 
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br><br>
-
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br><br>
-
-    <button type="submit">Login</button>
-
-</form>
-
-<br>
-<a href="/register">Register</a>
+        <div class="link-row">
+            No account? <a href="/register">Register</a>
+        </div>
+    </div>
 
 </body>
 </html>

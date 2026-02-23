@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg:           #f5f2ee;
+    --surface:      #ffffff;
+    --border:       #e0dbd3;
+    --text:         #1a1714;
+    --muted:        #7a746c;
+    --accent:       #c0392b;
+    --accent-hover: #a93226;
+    --radius:       6px;
+    --shadow:       0 2px 12px rgba(0,0,0,0.07);
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* ── Card container ── */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem 3rem;
+    width: 100%;
+    max-width: 420px;
+    animation: fadeUp 0.35s ease both;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Headings ── */
+h1 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+    color: var(--text);
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+}
+
+/* ── Form elements ── */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+    background: var(--surface);
+}
+
+/* ── Buttons ── */
+button[type="submit"] {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button[type="submit"]:hover {
+    background: var(--accent-hover);
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+.btn-logout {
+    margin-top: 0 !important;
+    padding: 0.45rem 1rem !important;
+    font-size: 0.85rem !important;
+    background: transparent !important;
+    color: var(--muted) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.btn-logout:hover {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+/* ── Links ── */
+a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.15s;
+}
+
+a:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+}
+
+.link-row {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+/* ── Error page ── */
+.error-card {
+    text-align: center;
+}
+
+.error-card h1 {
+    font-size: 5rem;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.error-card p {
+    color: var(--muted);
+    margin: 0.75rem 0 1.5rem;
+}
+
+/* ── Dashboard / page layout ── */
+.page {
+    max-width: 760px;
+    width: 100%;
+    animation: fadeUp 0.35s ease both;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+
+nav .logo {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+}
