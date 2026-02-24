@@ -22,8 +22,9 @@ func main() {
 	http.HandleFunc("/login", middlewares.CheckSessionCookie(handlers.Login, false))
 	http.HandleFunc("/logout", middlewares.CheckSessionCookie(handlers.Logout, true))
 
-	// Posts
+	// API
 	http.HandleFunc("/posts/create", middlewares.CheckSessionCookie(handlers.CreatePost, true))
+	http.HandleFunc("/comments/create", middlewares.CheckSessionCookie(handlers.CreateComment, true))
 
 	// Static
 	http.HandleFunc("/static/styles.css", handlers.Styles)

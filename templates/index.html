@@ -115,19 +115,24 @@
                     <!-- COMMENTS -->
                     <div class="comments">
                         <h4>Comments</h4>
-
+                        
+                        {{range .Comments}}
                         <div class="comment">
-                            <p><strong>Alice:</strong> Practice Flexbox and Grid!</p>
+                            <p><strong>Alice:</strong> {{.Text}}</p>
                             <div class="comment-actions">
                                 <button class="like small">👍 4</button>
                                 <button class="dislike small">👎 0</button>
                             </div>
                         </div>
+                        {{end}}
 
                         <!-- Add Comment (REGISTERED USERS ONLY) -->
                         <div class="add-comment registered-only">
-                            <input type="text" placeholder="Write a comment...">
-                            <button class="btn small primary">Comment</button>
+                            <form action="/comments/create" method="POST">
+                                <input type="hidden" name="postId" value="{{.Id}}">
+                                <input name="text" type="text" placeholder="Write a comment...">
+                                <button type="submit" class="btn small primary">Comment</button>
+                            </form>
                         </div>
                     </div>
                 </article>
