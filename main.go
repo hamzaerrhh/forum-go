@@ -7,10 +7,10 @@ import (
 
 	"forum/database"
 	"forum/handlers"
-	"forum/middlewares"
+	Routing "forum/routing"
 )
 
-func main() {
+/* func main() {
 	if err := database.Init(); err != nil {
 		log.Fatalf("Database initialization failed: %v", err)
 	}
@@ -31,6 +31,24 @@ func main() {
 	// http.HandleFunc("/static/", zone.HandleStatic)
 
 	fmt.Println("Server running on http://0.0.0.0:8080")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
+	}
+} */
+
+func main() {
+	if err := database.Init(); err != nil {
+		log.Fatalf("Database initialization failed: %v", err)
+	}
+
+	http.HandleFunc("/", handlers.Forum) // use middleware when separated to home & feed
+
+	Routing.RegisterRoutes()
+	// Static
+	http.HandleFunc("/static/styles.css", handlers.Styles)
+	// http.HandleFunc("/static/", zone.HandleStatic)
+
+	fmt.Println("Server running on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
