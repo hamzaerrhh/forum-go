@@ -1,8 +1,10 @@
-package database
+package api
 
 import (
 	"fmt"
 	"time"
+
+	"forum/database"
 )
 
 type Comment struct {
@@ -12,7 +14,7 @@ type Comment struct {
 
 func GetCommentsByPost(postId int) ([]Comment, error) {
 	var comments []Comment
-	rows, err := Database.Query(
+	rows, err := database.Database.Query(
 		"SELECT c.created_at, c.text FROM Comments c INNER JOIN Posts p ON c.post_id = p.id WHERE p.id = ?",
 		postId,
 	)

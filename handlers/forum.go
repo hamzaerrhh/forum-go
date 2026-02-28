@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"forum/database"
+	api "forum/forum-api"
 )
 
 // func HandleStatic(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +44,7 @@ func Styles(w http.ResponseWriter, r *http.Request) {
 type TemplateData struct {
 	IsLoggedIn bool
 	User       User
-	Posts      []database.Post
+	Posts      []api.Post
 }
 
 func Forum(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +64,7 @@ func Forum(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get posts
-	posts, err := database.GetPosts()
+	posts, err := api.GetPosts()
 
 	var buf bytes.Buffer
 	cookie, err := r.Cookie("session_id")

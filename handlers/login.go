@@ -70,6 +70,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			HandleError(w, http.StatusInternalServerError, "Server error") // message
+			log.Println(err)
 			return
 		}
 

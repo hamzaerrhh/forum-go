@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"forum/database"
+	api "forum/forum-api"
 )
 
 // CheckSessionCookie validates session cookie and redirects depending on requiresAuth
@@ -30,7 +31,7 @@ func CheckSessionCookie(handler http.HandlerFunc, requiresAuth bool) http.Handle
 					}
 					return
 				}
-				err = database.DeleteSession(cookie.Value)
+				err = api.DeleteSession(cookie.Value)
 				http.SetCookie(w, &http.Cookie{ // all fields needed ?
 					Name:     "session_id",
 					Value:    "",

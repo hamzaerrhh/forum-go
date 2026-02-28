@@ -1,8 +1,10 @@
-package database
+package api
 
 import (
 	"fmt"
 	"time"
+
+	"forum/database"
 )
 
 type Post struct {
@@ -18,7 +20,7 @@ func CreatePost() {
 
 func GetPosts() ([]Post, error) {
 	var posts []Post
-	rows, err := Database.Query(
+	rows, err := database.Database.Query(
 		"SELECT id, created_at, title, text FROM posts",
 	)
 	defer rows.Close() // release database resources

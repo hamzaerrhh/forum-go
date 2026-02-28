@@ -13,7 +13,7 @@ var Database *sql.DB
 func Init() error {
 	var err error
 
-	Database, err = sql.Open("sqlite3", "./db/forum.db")
+	Database, err = sql.Open("sqlite3", "./database/forum.db")
 	if err != nil {
 		return fmt.Errorf("can't open/create forum.db: %v", err)
 	}
@@ -22,7 +22,7 @@ func Init() error {
 		return fmt.Errorf("can't connect to database: %v", err)
 	}
 
-	schema, err := os.ReadFile("./db/schema.sql")
+	schema, err := os.ReadFile("./database/schema.sql")
 	if err != nil {
 		return fmt.Errorf("can't read schema: %v", err)
 	}
