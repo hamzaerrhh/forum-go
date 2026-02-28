@@ -7,17 +7,22 @@ import (
 	"time"
 
 	"forum/database"
+	"forum/handlers"
 )
 
 func RateLimit(handler http.HandlerFunc, maxRequests int, window time.Duration) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			handler(w, r)
+			return
+		}
 		ip, _, err := net.SplitHostPort(r.RemoteAddr)
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			handlers.HandleError(w, http.StatusInternalServerError, "Invalid IP address")
 			return
 		}
 
-		var count int // number of requests 
+		var count int // number of requests
 		var lastRequest time.Time
 
 		err = database.Database.QueryRow(
@@ -30,13 +35,13 @@ func RateLimit(handler http.HandlerFunc, maxRequests int, window time.Duration) 
 				ip, 1, time.Now(),
 			)
 			if err != nil {
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				handlers.HandleError(w, http.StatusInternalServerError, "Internal Server Erro")
 				return
 			}
 			handler(w, r)
 			return
 		} else if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			handlers.HandleError(w, http.StatusInternalServerError, "Internal Server Erro")
 			return
 		}
 
@@ -45,7 +50,7 @@ func RateLimit(handler http.HandlerFunc, maxRequests int, window time.Duration) 
 		}
 
 		if count >= maxRequests {
-			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
+			handlers.HandleError(w, http.StatusTooManyRequests, "Rate limit exceeded. Please try again later.")
 			return
 		}
 
@@ -54,7 +59,7 @@ func RateLimit(handler http.HandlerFunc, maxRequests int, window time.Duration) 
 			count+1, time.Now(), ip,
 		)
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			handlers.HandleError(w, http.StatusInternalServerError, "Internal Server Erro")
 			return
 		}
 
