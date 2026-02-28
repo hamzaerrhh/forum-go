@@ -1,11 +1,13 @@
 package middlewares
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
 	"forum/database"
 	api "forum/forum-api"
+	"forum/handlers"
 )
 
 // CheckSessionCookie validates session cookie and redirects depending on requiresAuth
@@ -19,10 +21,11 @@ func CheckSessionCookie(handler http.HandlerFunc, requiresAuth bool) http.Handle
 			var expiryTime time.Time
 			err = database.Database.QueryRow(
 				"SELECT expires_at FROM sessions WHERE id = ?", cookie.Value,
-			).Scan(&expiryTime) // or use "select exists(...)"
-			// 2. session existence in database
-			if err == nil {
-				// 3. valid session expiry datetime
+			).Scan(&expiryTime)
+
+			switch err {
+			case nil:
+				// session found
 				if expiryTime.After(time.Now()) {
 					if requiresAuth {
 						handler(w, r)
@@ -31,15 +34,18 @@ func CheckSessionCookie(handler http.HandlerFunc, requiresAuth bool) http.Handle
 					}
 					return
 				}
-				err = api.DeleteSession(cookie.Value)
-				http.SetCookie(w, &http.Cookie{ // all fields needed ?
-					Name:     "session_id",
-					Value:    "",
-					Path:     "/",
-					MaxAge:   -1,
-					Expires:  time.Now().Add(-1 * time.Hour),
-					HttpOnly: true,
-				})
+
+				// expired
+				api.DeleteSession(cookie.Value)
+				clearSessionCookie(w)
+
+			case sql.ErrNoRows:
+				// session not found
+				clearSessionCookie(w)
+
+			default:
+				handlers.HandleError(w, http.StatusInternalServerError, "Database error")
+				return
 			}
 		}
 		if requiresAuth {
@@ -48,4 +54,15 @@ func CheckSessionCookie(handler http.HandlerFunc, requiresAuth bool) http.Handle
 			handler(w, r)
 		}
 	}
+}
+
+func clearSessionCookie(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_id",
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	})
 }
