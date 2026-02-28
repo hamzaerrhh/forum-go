@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"bytes"
-	"html/template"
 	"net/http"
 	"strings"
 
@@ -15,6 +13,7 @@ type User struct {
 	Name     string
 	Email    string
 	Password string
+	Message  string
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -25,17 +24,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		t, err := template.ParseFiles("templates/register.html")
-		if err != nil {
-			HandleError(w, http.StatusInternalServerError, "Template error")
-			return
-		}
-		var buf bytes.Buffer
-		if err := t.Execute(&buf, nil); err != nil {
-			http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-		buf.WriteTo(w)
+		RenderTemplate(w, 200, "register.html", nil)
 	case http.MethodPost:
 		user := User{
 			Name:     strings.TrimSpace(r.FormValue("name")),
@@ -56,8 +45,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusBadRequest, "Invalid email address")
 			return
 		}
-		if len(user.Password) < 6 || len(user.Password) > 20 {
-			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
+		if len(user.Password) < 6 || len(user.Password) > 21 {
+			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 21 characters")
 			return
 		}
 
@@ -71,8 +60,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if exists {
-			HandleError(w, http.StatusConflict, "Email already taken")
+			user.Message = "Email already registered"
+			RenderTemplate(w, 400, "register.html", user)
 			return
+
 		}
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
