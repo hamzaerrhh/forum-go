@@ -33,11 +33,6 @@ import (
 // 	http.ServeFile(w, r, filePath)
 // }
 
-// Serves the CSS file
-func Styles(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/css")
-	http.ServeFile(w, r, "assets/styles.css")
-}
 
 // =======================================================================
 
