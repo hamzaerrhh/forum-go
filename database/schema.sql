@@ -59,3 +59,17 @@ CREATE TABLE IF NOT EXISTS rate_limits (
     last_request DATETIME NOT NULL,
     PRIMARY KEY (ip, route)
 );
+INSERT OR IGNORE INTO CATEGORY (name) VALUES 
+('General'),
+('Lifestyle'),
+('Health & Fitness'),
+('Travel'),
+('Food & Cooking'),
+('Education'),
+('Business'),
+('Finance'),
+('Entertainment'),
+('Sports'),
+('Personal Dev'),
+('Culture'),
+('News');

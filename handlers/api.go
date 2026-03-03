@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -21,31 +22,95 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	title := strings.TrimSpace(r.FormValue("title"))
 	text := r.FormValue("text")
+	categories := r.Form["categories"] // handle empty categories ?!
+	
+	// Validate that at least one category is selected
+	if len(categories) == 0 {
+		HandleError(w, http.StatusBadRequest, "At least one category must be selected")
+		return
+	}
+	
+	fmt.Println("data", title, text, categories)
 
-	// handle empty title or text !!!
-
-	// get user id
 	var userId int
-	cookie, _ := r.Cookie("session_id")
-	err := database.Database.QueryRow(
+	cookie, err := r.Cookie("session_id")
+	if err != nil {
+		HandleError(w, http.StatusUnauthorized, "You must be logged in to create a post")
+		return
+	}
+	
+	err = database.Database.QueryRow(
 		"SELECT user_id FROM sessions WHERE id = ?",
 		cookie.Value,
 	).Scan(&userId)
+	
+	if err != nil {
+		HandleError(w, http.StatusUnauthorized, "Invalid or expired session")
+		return
+	}
 
-	// create post
-	_, err = database.Database.Exec(
+	// Start a transaction to ensure data consistency
+	tx, err := database.Database.Begin()
+	if err != nil {
+		HandleError(w, http.StatusInternalServerError, "Could not create post")
+		return
+	}
+	defer tx.Rollback() // Rollback if anything fails
+
+	// Create post
+	result, err := tx.Exec(
 		"INSERT INTO posts (user_id, created_at, title, text) VALUES (?, ?, ?, ?)",
 		userId,
 		time.Now(),
 		title,
 		text,
 	)
-	// create session if you want to redirect to its page
+	
 	if err != nil {
-		// log.Println(err.Error())
-		// HandleError(w, http.StatusInternalServerError, "Could not create account")
+		HandleError(w, http.StatusInternalServerError, "Could not create post")
 		return
 	}
+
+	// Get the ID of the newly created post
+	postID, err := result.LastInsertId()
+	if err != nil {
+		HandleError(w, http.StatusInternalServerError, "Could not retrieve post ID")
+		return
+	}
+
+	// Validate and insert categories
+	for _, categoryName := range categories {
+		var categoryID int
+		err := tx.QueryRow(
+			"SELECT id FROM category WHERE name = ?",
+			categoryName,
+		).Scan(&categoryID)
+		
+		if err != nil {
+			// Category doesn't exist
+			HandleError(w, http.StatusBadRequest, "Invalid category: "+categoryName)
+			return
+		}
+		
+		// Insert into post_category
+		_, err = tx.Exec(
+			"INSERT INTO post_category (post_id, category_id) VALUES (?, ?)",
+			postID,
+			categoryID,
+		)
+		
+		if err != nil {
+			HandleError(w, http.StatusInternalServerError, "Could not associate categories with post")
+			return
+		}
+	}
+
+	// Commit the transaction
+	if err = tx.Commit(); err != nil {
+		HandleError(w, http.StatusInternalServerError, "Could not save post")
+		return
+	}
+
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 

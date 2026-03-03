@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- todo add a humberger menu in nav Bar for mobile devices  -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,6 +9,7 @@
   </head>
   <body>
     <!-- HEADER -->
+
     <header class="navbar">
       <div class="logo">01Forum</div>
       <div class="auth-buttons">
@@ -87,19 +89,79 @@
             ></textarea>
 
             <div class="categories">
-              <label><input type="checkbox" checked /> General</label>
-              <label><input type="checkbox" /> Lifestyle</label>
-              <label><input type="checkbox" /> Health & Fitness</label>
-              <label><input type="checkbox" /> Travel</label>
-              <label><input type="checkbox" /> Food & Cooking</label>
-              <label><input type="checkbox" /> Education</label>
-              <label><input type="checkbox" /> Business</label>
-              <label><input type="checkbox" /> Finance</label>
-              <label><input type="checkbox" /> Entertainment</label>
-              <label><input type="checkbox" /> Sports</label>
-              <label><input type="checkbox" /> Personal Dev</label>
-              <label><input type="checkbox" /> Culture</label>
-              <label><input type="checkbox" /> News</label>
+              <label
+                ><input
+                  type="checkbox"
+                  name="categories"
+                  value="General"
+                  checked
+                />
+                General</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="Lifestyle" />
+                Lifestyle</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="categories"
+                  value="Health & Fitness"
+                />
+                Health & Fitness</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="Travel" />
+                Travel</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="categories"
+                  value="Food & Cooking"
+                />
+                Food & Cooking</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="Education" />
+                Education</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="Business" />
+                Business</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="Finance" />
+                Finance</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="categories"
+                  value="Entertainment"
+                />
+                Entertainment</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="Sports" />
+                Sports</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="categories"
+                  value="Personal Dev"
+                />
+                Personal Dev</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="Culture" />
+                Culture</label
+              >
+              <label
+                ><input type="checkbox" name="categories" value="News" />
+                News</label
+              >
             </div>
 
             <button type="submit" class="btn primary">Publish</button>
@@ -121,8 +183,9 @@
             </div>
 
             <div class="post-categories">
-              <span class="category">Programming</span>
-              <span class="category">Technology</span>
+              {{range .Categories}}
+              <span class="category">{{.}}</span>
+              {{end}}
             </div>
 
             <div class="post-actions">

@@ -33,7 +33,6 @@ import (
 // 	http.ServeFile(w, r, filePath)
 // }
 
-
 // =======================================================================
 
 type TemplateData struct {
@@ -60,7 +59,6 @@ func Forum(w http.ResponseWriter, r *http.Request) {
 
 	// get posts
 	posts, err := api.GetPosts()
-
 	var buf bytes.Buffer
 	cookie, err := r.Cookie("session_id")
 	if err != nil { // http.ErrNoCookie

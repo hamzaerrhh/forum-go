@@ -9,7 +9,6 @@ import (
 	"net/http"
 )
 
-
 func main() {
 	if err := database.Init(); err != nil {
 		log.Fatalf("Database initialization failed: %v", err)
@@ -28,9 +27,3 @@ func main() {
 	}
 }
 
-
-
-
-// func main() {
-// 	fmt.Println("Starting server...")
-// }
