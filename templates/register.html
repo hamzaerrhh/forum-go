@@ -1,41 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
     <div class="card">
-        <h1>Register</h1>
-        <p class="subtitle">Create your account</p>
-       {{if .Message}}
-        <div class="form-error">{{.Message}}</div>
-        {{end}}
-        <form action="/register" method="POST">
-            <div class="field">
-                <label>Name</label>
-                <input type="text" name="name" required minlength="2" maxlength="50" autocomplete="name">
-            </div>
-            <div class="field">
-                <label>Email</label>
-                <input type="email" name="email" required autocomplete="email">
-               
-            </div>
-            <div class="field">
-                <label>Password</label>
-                <input type="password" name="password" required minlength="6" maxlength="20" autocomplete="new-password">
-            </div>
-            <button type="submit">Register</button>
-        </form>
-
-        <div class="link-row">
-            Already have an account? <a href="/login">Login</a>
+      <h1>Register</h1>
+      <p class="subtitle">Create your account</p>
+      {{if .Message}}
+      <div class="form-error">{{.Message}}</div>
+      {{end}}
+      <form action="/register" method="POST">
+        <div class="field">
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            required
+            minlength="2"
+            maxlength="50"
+            autocomplete="name"
+          />
         </div>
-        <!-- <a href="/">Back to Home</a> -->
-    </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" required autocomplete="email" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            required
+            minlength="6"
+            maxlength="20"
+            autocomplete="new-password"
+          />
+        </div>
+        <div class="field">
+          <label>Password Confirmation</label>
+          <input
+            type="password"
+            name="confirm_password"
+            required
+            minlength="6"
+            maxlength="20"
+            autocomplete="new-password"
+          />
+        </div>
+        <button type="submit">Register</button>
+      </form>
 
-</body>
+      <div class="link-row">
+        Already have an account? <a href="/login">Login</a>
+      </div>
+      <!-- <a href="/">Back to Home</a> -->
+    </div>
+  </body>
 </html>
