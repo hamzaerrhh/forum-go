@@ -1,20 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>01 Forum</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
     <!-- HEADER -->
     <header class="navbar">
-        <div class="logo">01Forum</div>
-        <div class="auth-buttons">
-            {{if .IsLoggedIn}}
-            <!-- Show when logged in -->
-            <!-- <div class="page">
+      <div class="logo">01Forum</div>
+      <div class="auth-buttons">
+        {{if .IsLoggedIn}}
+        <!-- Show when logged in -->
+        <!-- <div class="page">
                 <nav>
                     <span class="logo">Zone</span>
                     <form action="/Logout" method="POST">
@@ -27,120 +26,143 @@
                     <p class="subtitle">You are now logged in.</p>
                 </div>
             </div> -->
-            <span class="welcome">Welcome, {{.User.Name}}</span>
-            <form action="/logout" method="POST">
-                <button type="submit" class="btn logout">Logout</button>
-            </form>
-            {{else}}
-            <!-- Show when NOT logged in -->
-            <!-- <div class="link-row" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+        <span class="welcome">Welcome, {{.User.Name}}</span>
+        <form action="/logout" method="POST">
+          <button type="submit" class="btn logout">Logout</button>
+        </form>
+        {{else}}
+        <!-- Show when NOT logged in -->
+        <!-- <div class="link-row" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
                 <a href="/Login">Login</a>
                 <a href="/Register">Register</a>
             </div> -->
-            <a type="button" href="/login" class="btn login">Login</a>
-            <a type="button" href="/register" class="btn register">Register</a>
-            {{end}}
-        </div>
+        <a type="button" href="/login" class="btn login">Login</a>
+        <a type="button" href="/register" class="btn register">Register</a>
+        {{end}}
+      </div>
     </header>
 
     <div class="container">
+      <!-- FILTER SECTION -->
+      <aside class="sidebar">
+        <h3>Filter Posts</h3>
 
-        <!-- FILTER SECTION -->
-        <aside class="sidebar">
-            <h3>Filter Posts</h3>
+        <div class="filter-group">
+          <h4>By Category</h4>
+          <label><input type="checkbox" checked /> General</label>
+          <label><input type="checkbox" /> Lifestyle</label>
+          <label><input type="checkbox" /> Health & Fitness</label>
+          <label><input type="checkbox" /> Travel</label>
+          <label><input type="checkbox" /> Food & Cooking</label>
+          <label><input type="checkbox" /> Education</label>
+          <label><input type="checkbox" /> Business</label>
+          <label><input type="checkbox" /> Finance</label>
+          <label><input type="checkbox" /> Entertainment</label>
+          <label><input type="checkbox" /> Sports</label>
+          <label><input type="checkbox" /> Personal Dev</label>
+          <label><input type="checkbox" /> Culture</label>
+          <label><input type="checkbox" /> News</label>
+        </div>
 
-            <div class="filter-group">
-                <h4>By Category</h4>
-                <label><input type="checkbox"> General</label>
-                <label><input type="checkbox"> Programming</label>
-                <label><input type="checkbox"> Gaming</label>
-                <label><input type="checkbox"> Technology</label>
+        <!-- Visible only for logged-in users -->
+        <div class="filter-group registered-only">
+          <h4>My Activity</h4>
+          <button class="filter-btn">My Created Posts</button>
+          <button class="filter-btn">Posts I Liked</button>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="content">
+        <!-- CREATE POST (REGISTERED USERS ONLY) -->
+        <section class="create-post registered-only">
+          <h2>Create New Post</h2>
+          <form action="/posts/create" method="POST">
+            <input type="text" name="title" placeholder="Post title" required />
+
+            <textarea
+              name="text"
+              placeholder="Write your post..."
+              required
+            ></textarea>
+
+            <div class="categories">
+              <label><input type="checkbox" checked /> General</label>
+              <label><input type="checkbox" /> Lifestyle</label>
+              <label><input type="checkbox" /> Health & Fitness</label>
+              <label><input type="checkbox" /> Travel</label>
+              <label><input type="checkbox" /> Food & Cooking</label>
+              <label><input type="checkbox" /> Education</label>
+              <label><input type="checkbox" /> Business</label>
+              <label><input type="checkbox" /> Finance</label>
+              <label><input type="checkbox" /> Entertainment</label>
+              <label><input type="checkbox" /> Sports</label>
+              <label><input type="checkbox" /> Personal Dev</label>
+              <label><input type="checkbox" /> Culture</label>
+              <label><input type="checkbox" /> News</label>
             </div>
 
-            <!-- Visible only for logged-in users -->
-            <div class="filter-group registered-only">
-                <h4>My Activity</h4>
-                <button class="filter-btn">My Created Posts</button>
-                <button class="filter-btn">Posts I Liked</button>
+            <button type="submit" class="btn primary">Publish</button>
+          </form>
+        </section>
+
+        <!-- POSTS LIST -->
+        <section class="posts">
+          {{range .Posts}}
+          <!-- SINGLE POST -->
+          <article class="post">
+            <div class="post-header">
+              <h3>{{.Title}}</h3>
+              <span class="post-meta">Posted by JohnDoe · 2 hours ago</span>
             </div>
-        </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="content">
+            <div class="post-body">
+              <p>{{.Text}}</p>
+            </div>
 
-            <!-- CREATE POST (REGISTERED USERS ONLY) -->
-            <section class="create-post registered-only">
-                <h2>Create New Post</h2>
-                <form action="/posts/create" method="POST">
-                    <input type="text" name="title" placeholder="Post title" required>
-                    
-                    <textarea name="text" placeholder="Write your post..." required></textarea>
+            <div class="post-categories">
+              <span class="category">Programming</span>
+              <span class="category">Technology</span>
+            </div>
 
-                    <!-- <div class="categories">
-                        <label><input type="checkbox"> General</label>
-                        <label><input type="checkbox"> Programming</label>
-                        <label><input type="checkbox"> Gaming</label>
-                        <label><input type="checkbox"> Technology</label>
-                    </div> -->
+            <div class="post-actions">
+              <button class="like">👍 12</button>
+              <button class="dislike">👎 2</button>
+            </div>
 
-                    <button type="submit" class="btn primary">Publish</button>
+            <!-- COMMENTS -->
+            <div class="comments">
+              <h4>Comments</h4>
+
+              {{range .Comments}}
+              <div class="comment">
+                <p><strong>Alice:</strong> {{.Text}}</p>
+                <div class="comment-actions">
+                  <button class="like small">👍 4</button>
+                  <button class="dislike small">👎 0</button>
+                </div>
+              </div>
+              {{end}}
+
+              <!-- Add Comment (REGISTERED USERS ONLY) -->
+              <div class="add-comment registered-only">
+                <form action="/comments/create" method="POST">
+                  <input type="hidden" name="postId" value="{{.Id}}" />
+                  <input
+                    name="text"
+                    type="text"
+                    placeholder="Write a comment..."
+                  />
+                  <button type="submit" class="btn small primary">
+                    Comment
+                  </button>
                 </form>
-            </section>
-
-            <!-- POSTS LIST -->
-            <section class="posts">
-
-                {{range .Posts}}
-                <!-- SINGLE POST -->
-                <article class="post">
-                    <div class="post-header">
-                        <h3>{{.Title}}</h3>
-                        <span class="post-meta">Posted by JohnDoe · 2 hours ago</span>
-                    </div>
-
-                    <div class="post-body">
-                        <p>{{.Text}}</p>
-                    </div>
-
-                    <div class="post-categories">
-                        <span class="category">Programming</span>
-                        <span class="category">Technology</span>
-                    </div>
-
-                    <div class="post-actions">
-                        <button class="like">👍 12</button>
-                        <button class="dislike">👎 2</button>
-                    </div>
-
-                    <!-- COMMENTS -->
-                    <div class="comments">
-                        <h4>Comments</h4>
-                        
-                        {{range .Comments}}
-                        <div class="comment">
-                            <p><strong>Alice:</strong> {{.Text}}</p>
-                            <div class="comment-actions">
-                                <button class="like small">👍 4</button>
-                                <button class="dislike small">👎 0</button>
-                            </div>
-                        </div>
-                        {{end}}
-
-                        <!-- Add Comment (REGISTERED USERS ONLY) -->
-                        <div class="add-comment registered-only">
-                            <form action="/comments/create" method="POST">
-                                <input type="hidden" name="postId" value="{{.Id}}">
-                                <input name="text" type="text" placeholder="Write a comment...">
-                                <button type="submit" class="btn small primary">Comment</button>
-                            </form>
-                        </div>
-                    </div>
-                </article>
-                {{end}}
-
-            </section>
-        </main>
+              </div>
+            </div>
+          </article>
+          {{end}}
+        </section>
+      </main>
     </div>
-
-</body>
+  </body>
 </html>
