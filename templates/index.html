@@ -7,6 +7,7 @@
     <title>01 Forum</title>
     <link rel="stylesheet" href="/static/style.css" />
   </head>
+
   <body>
     <!-- HEADER -->
 
@@ -46,105 +47,49 @@
 
     <div class="container">
       <!-- FILTER SECTION -->
-      <aside class="sidebar">
-        <h3>Filter Posts</h3>
+     <aside class="sidebar">
+  <h3>Filter Posts</h3>
 
-        <form method="GET" action="/" id="filter-form">
-          <div class="filter-group">
-            <div>
-              <h4>By Category</h4>
-              <span> filter </span>
-            </div>
+  <form method="GET" action="/" id="filter-form">
 
-            <!-- Add name="category" to each checkbox -->
-            <label
-              ><input type="checkbox" name="category" value="General" checked />
-              General</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Lifestyle" />
-              Lifestyle</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="category"
-                value="Health & Fitness"
-              />
-              Health & Fitness</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Travel" />
-              Travel</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Food & Cooking" />
-              Food & Cooking</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Education" />
-              Education</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Business" />
-              Business</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Finance" />
-              Finance</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Entertainment" />
-              Entertainment</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Sports" />
-              Sports</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Personal Dev" />
-              Personal Dev</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="Culture" />
-              Culture</label
-            >
-            <label
-              ><input type="checkbox" name="category" value="News" />
-              News</label
-            >
+    <!-- Hidden input to store selected filter -->
+    <input type="hidden" name="filter" id="filter-input" value="" />
 
-            <!-- Add filter button -->
-            <button type="submit" class="filter-btn">Apply Filters</button>
-            <a href="/" class="clear-btn">Clear Filters</a>
-          </div>
-        </form>
+    <!-- My Posts / Liked Posts Buttons -->
+    <div class="filter-group registered-only">
+      <button type="button" name="my-creat-postes"  class="filter-btn">
+        My Created Posts
+      </button>
 
-        <!-- Visible only for logged-in users -->
-        <div class="filter-group registered-only">
-          <h4>My Activity</h4>
-          <form method="GET" action="/" style="display: inline">
-            <button
-              type="submit"
-              name="filter"
-              value="my-posts"
-              class="filter-btn"
-            >
-              My Created Posts
-            </button>
-          </form>
-          <form method="GET" action="/" style="display: inline">
-            <button
-              type="submit"
-              name="filter"
-              value="liked-posts"
-              class="filter-btn"
-            >
-              Posts I Liked
-            </button>
-          </form>
-        </div>
-      </aside>
+      <button type="button" name="my-laked-post" class="filter-btn">
+        Posts I Liked
+      </button>
+    </div>
+    
+     <!-- Categories -->
+    <div class="filter-group">
+      <h4>By Category</h4>
+
+      <label><input type="checkbox" name="category" value="General"  /> General</label>
+      <label><input type="checkbox" name="category" value="Lifestyle" /> Lifestyle</label>
+      <label><input type="checkbox" name="category" value="Health & Fitness" /> Health & Fitness</label>
+      <label><input type="checkbox" name="category" value="Travel" /> Travel</label>
+      <label><input type="checkbox" name="category" value="Food & Cooking" /> Food & Cooking</label>
+      <label><input type="checkbox" name="category" value="Education" /> Education</label>
+      <label><input type="checkbox" name="category" value="Business" /> Business</label>
+      <label><input type="checkbox" name="category" value="Finance" /> Finance</label>
+      <label><input type="checkbox" name="category" value="Entertainment" /> Entertainment</label>
+      <label><input type="checkbox" name="category" value="Sports" /> Sports</label>
+      <label><input type="checkbox" name="category" value="Personal Dev" /> Personal Dev</label>
+      <label><input type="checkbox" name="category" value="Culture" /> Culture</label>
+      <label><input type="checkbox" name="category" value="News" /> News</label>
+
+      <button type="submit" class="filter-btn">Apply Filters</button>
+      <a href="/" class="clear-btn">Clear Filters</a>
+    </div>
+
+  </form>
+</aside>
       <!-- MAIN CONTENT -->
       <main class="content">
         <!-- CREATE POST (REGISTERED USERS ONLY) -->
@@ -299,4 +244,37 @@
       </main>
     </div>
   </body>
+<script>
+  document.querySelectorAll(".filter-btn").forEach(button => {
+    button.addEventListener("click", function () {
+      // Toggle active class
+      this.classList.toggle("active");
+
+      // Get all active buttons
+      const activeButtons = Array.from(document.querySelectorAll(".filter-btn.active"));
+
+      // Use URL and URLSearchParams to modify query safely
+      const url = new URL(window.location.href);
+      const params = url.searchParams;
+
+      // Clear previous custom filter params first (if any)
+      ['my-creat-postes', 'my-laked-post'].forEach(name => params.delete(name));
+
+      // Add active filters to query
+      activeButtons.forEach(btn => {
+        if (btn.name) {
+          params.set(btn.name, 'true');
+        }
+      });
+
+
+
+      // Update the URL without reloading the page
+      window.history.replaceState({}, '', url);
+
+      console.log("Updated URL:", url.toString());
+    });
+  });
+</script>
+  
 </html>

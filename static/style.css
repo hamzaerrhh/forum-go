@@ -251,6 +251,14 @@ button {
   color: var(--accent);
   background: rgba(232, 255, 71, 0.04);
 }
+.filter-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(232, 255, 71, 0.04);
+}
+
+
+
 
 /* ── Main Content ─────────────────────────────────────────────── */
 .content {
