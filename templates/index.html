@@ -52,8 +52,6 @@
 
   <form method="GET" action="/" id="filter-form">
 
-    <!-- Hidden input to store selected filter -->
-    <input type="hidden" name="filter" id="filter-input" value="" />
 
     <!-- My Posts / Liked Posts Buttons -->
     <div class="filter-group registered-only">
@@ -61,7 +59,7 @@
         My Created Posts
       </button>
 
-      <button type="button" name="my-laked-post" class="filter-btn">
+      <button type="button" name="my-liked-post" class="filter-btn">
         Posts I Liked
       </button>
     </div>
@@ -69,20 +67,22 @@
      <!-- Categories -->
     <div class="filter-group">
       <h4>By Category</h4>
+      <input type="hidden" name="my-creat-postes" id="input-my-creat-postes" />
+<input type="hidden" name="my-liked-post" id="input-my-liked-post" />
 
-      <label><input type="checkbox" name="category" value="General"  /> General</label>
-      <label><input type="checkbox" name="category" value="Lifestyle" /> Lifestyle</label>
-      <label><input type="checkbox" name="category" value="Health & Fitness" /> Health & Fitness</label>
-      <label><input type="checkbox" name="category" value="Travel" /> Travel</label>
-      <label><input type="checkbox" name="category" value="Food & Cooking" /> Food & Cooking</label>
-      <label><input type="checkbox" name="category" value="Education" /> Education</label>
-      <label><input type="checkbox" name="category" value="Business" /> Business</label>
-      <label><input type="checkbox" name="category" value="Finance" /> Finance</label>
-      <label><input type="checkbox" name="category" value="Entertainment" /> Entertainment</label>
-      <label><input type="checkbox" name="category" value="Sports" /> Sports</label>
-      <label><input type="checkbox" name="category" value="Personal Dev" /> Personal Dev</label>
-      <label><input type="checkbox" name="category" value="Culture" /> Culture</label>
-      <label><input type="checkbox" name="category" value="News" /> News</label>
+      <label><input type="checkbox" name="categories" value="General"  /> General</label>
+      <label><input type="checkbox" name="categories" value="Lifestyle" /> Lifestyle</label>
+      <label><input type="checkbox" name="categories" value="Health & Fitness" /> Health & Fitness</label>
+      <label><input type="checkbox" name="categories" value="Travel" /> Travel</label>
+      <label><input type="checkbox" name="categories" value="Food & Cooking" /> Food & Cooking</label>
+      <label><input type="checkbox" name="categories" value="Education" /> Education</label>
+      <label><input type="checkbox" name="categories" value="Business" /> Business</label>
+      <label><input type="checkbox" name="categories" value="Finance" /> Finance</label>
+      <label><input type="checkbox" name="categories" value="Entertainment" /> Entertainment</label>
+      <label><input type="checkbox" name="categories" value="Sports" /> Sports</label>
+      <label><input type="checkbox" name="categories" value="Personal Dev" /> Personal Dev</label>
+      <label><input type="checkbox" name="categories" value="Culture" /> Culture</label>
+      <label><input type="checkbox" name="categories" value="News" /> News</label>
 
       <button type="submit" class="filter-btn">Apply Filters</button>
       <a href="/" class="clear-btn">Clear Filters</a>
@@ -244,7 +244,32 @@
       </main>
     </div>
   </body>
-<script>
+  <script>
+    document.querySelectorAll(".filter-btn").forEach(button => {
+  button.addEventListener("click", function () {
+    this.classList.toggle("active");
+
+    // Map button names to hidden inputs
+    const hiddenInputs = {
+      "my-creat-postes": document.getElementById("input-my-creat-postes"),
+      "my-liked-post": document.getElementById("input-my-liked-post"),
+    };
+
+    // Update hidden inputs based on active buttons
+    Object.keys(hiddenInputs).forEach(name => {
+      hiddenInputs[name].value = ""; // reset
+    });
+
+    const activeButtons = Array.from(document.querySelectorAll(".filter-btn.active"));
+    activeButtons.forEach(btn => {
+      if (hiddenInputs[btn.name]) {
+        hiddenInputs[btn.name].value = "true";
+      }
+    });
+  });
+});
+  </script>
+<!-- <script>
   document.querySelectorAll(".filter-btn").forEach(button => {
     button.addEventListener("click", function () {
       // Toggle active class
@@ -258,7 +283,7 @@
       const params = url.searchParams;
 
       // Clear previous custom filter params first (if any)
-      ['my-creat-postes', 'my-laked-post'].forEach(name => params.delete(name));
+      ['my-creat-postes', 'my-liked-post'].forEach(name => params.delete(name));
 
       // Add active filters to query
       activeButtons.forEach(btn => {
@@ -275,6 +300,6 @@
       console.log("Updated URL:", url.toString());
     });
   });
-</script>
+</script> -->
   
 </html>

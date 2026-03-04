@@ -22,6 +22,10 @@ type Post struct {
 
 func GetPosts() ([]Post, error) {
     var posts []Post
+    //here i will check the categories and filters
+
+
+    
     
     // Modified query to include user_id since we need it for categories
     rows, err := database.Database.Query(

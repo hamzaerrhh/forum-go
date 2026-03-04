@@ -23,13 +23,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	title := strings.TrimSpace(r.FormValue("title"))
 	text := r.FormValue("text")
 	categories := r.Form["categories"] // handle empty categories ?!
-	
+
 	// Validate that at least one category is selected
 	if len(categories) == 0 {
 		HandleError(w, http.StatusBadRequest, "At least one category must be selected")
 		return
 	}
-	
+
 	fmt.Println("data", title, text, categories)
 
 	var userId int
@@ -38,12 +38,11 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		HandleError(w, http.StatusUnauthorized, "You must be logged in to create a post")
 		return
 	}
-	
+
 	err = database.Database.QueryRow(
 		"SELECT user_id FROM sessions WHERE id = ?",
 		cookie.Value,
 	).Scan(&userId)
-	
 	if err != nil {
 		HandleError(w, http.StatusUnauthorized, "Invalid or expired session")
 		return
@@ -65,7 +64,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		title,
 		text,
 	)
-	
 	if err != nil {
 		HandleError(w, http.StatusInternalServerError, "Could not create post")
 		return
@@ -85,20 +83,18 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			"SELECT id FROM category WHERE name = ?",
 			categoryName,
 		).Scan(&categoryID)
-		
 		if err != nil {
 			// Category doesn't exist
 			HandleError(w, http.StatusBadRequest, "Invalid category: "+categoryName)
 			return
 		}
-		
+
 		// Insert into post_category
 		_, err = tx.Exec(
 			"INSERT INTO post_category (post_id, category_id) VALUES (?, ?)",
 			postID,
 			categoryID,
 		)
-		
 		if err != nil {
 			HandleError(w, http.StatusInternalServerError, "Could not associate categories with post")
 			return
