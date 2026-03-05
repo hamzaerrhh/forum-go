@@ -31,7 +31,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			Name:     strings.TrimSpace(r.FormValue("name")),
 			Email:    strings.TrimSpace(r.FormValue("email")),
 			Password: r.FormValue("password"),
-			confarmPassword: r.FormValue("confarmPassword"),
+			confarmPassword: r.FormValue("confirm_password"),
 		}
 
 		// Input validation
