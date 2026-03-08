@@ -178,11 +178,16 @@ func PostResolver(w http.ResponseWriter, r *http.Request) {
 
 		// + case delete
 	case "delete":
-		if r.Method != http.MethodPost{
+		if r.Method != http.MethodPost {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		api.DeletePost(postId, user.Id)
+		err := api.DeletePost(postId, user.Id)
+		if err != nil {
+			HandleError(w, http.StatusForbidden, err.Error())
+			return
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
@@ -207,12 +212,17 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 		}
 		api.ReactToComment(user.Id, commentId, false)
 
-		// + case delete
-		case "delete":
+	// + case delete
+	case "delete":
 		if r.Method != http.MethodPost {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		api.DeleteComment(commentId, user.Id)
+		err := api.DeleteComment(commentId, user.Id)
+		if err != nil {
+			HandleError(w, http.StatusForbidden, err.Error())
+			return
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
