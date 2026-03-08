@@ -156,6 +156,9 @@ a:hover {
   color: #0f0f0f;
   border-color: var(--red);
 }
+.btn.danger:hover {
+  opacity: 0.8;
+}
 .btn.primary:hover {
   background: var(--accent-dim);
   border-color: var(--accent-dim);
