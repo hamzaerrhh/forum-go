@@ -10,7 +10,7 @@ async function reactToPost(postId, endpoint) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
     } catch (error) {
-        console.error('Error sending vote:', error);
+        console.error('Error sending reaction:', error);
     }
 }
 
@@ -26,7 +26,7 @@ async function reactToComment(commentId, endpoint) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
     } catch (error) {
-        console.error('Error sending vote:', error);
+        console.error('Error sending reaction:', error);
     }
 }
 

@@ -275,7 +275,7 @@
               <button class="like-btn{{if eq .IsLiked 1}} active{{end}}">
                 👍 {{.LikeCount}}
               </button>
-              <button class="dislike-btn{{if eq .IsLiked 0}} active{{end}}">
+              <button class="dislike-btn{{if eq .IsLiked -1}} active{{end}}">
                 👎 {{.DislikeCount}}
               </button>
             </div>
@@ -303,7 +303,7 @@
                     👍 {{.LikeCount}}
                   </button>
                   <button
-                    class="comment-dislike-btn small{{if eq .IsLiked 0}} active{{end}}"
+                    class="comment-dislike-btn small{{if eq .IsLiked -1}} active{{end}}"
                   >
                     👎 {{.DislikeCount}}
                   </button>

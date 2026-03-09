@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	"forum/database"
 	"forum/handlers"
 	"forum/routing"
-	"log"
-	"net/http"
 )
 
 func main() {
@@ -15,15 +16,12 @@ func main() {
 	}
 
 	http.HandleFunc("/static/", handlers.HandleStatic)
-	http.HandleFunc("/", handlers.Forum) // use middleware when separated to home & feed
+	http.HandleFunc("/", handlers.Forum)
 
 	routing.RegisterRoutes()
-	// Static
-	// http.HandleFunc("/static/", zone.HandleStatic)
 
 	fmt.Println("Server running on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
 }
-

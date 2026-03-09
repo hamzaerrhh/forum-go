@@ -167,14 +167,14 @@ func PostResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		api.ReactToPost(user.Id, postId, true)
+		api.ReactToPost(user.Id, postId, 1)
 
 	case "dislike":
 		if r.Method != http.MethodPost {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		api.ReactToPost(user.Id, postId, false)
+		api.ReactToPost(user.Id, postId, -1)
 
 		// + case delete
 	case "delete":
@@ -203,14 +203,14 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		api.ReactToComment(user.Id, commentId, true)
+		api.ReactToComment(user.Id, commentId, 1)
 
 	case "dislike":
 		if r.Method != http.MethodPost {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		api.ReactToComment(user.Id, commentId, false)
+		api.ReactToComment(user.Id, commentId, -1)
 
 	// + case delete
 	case "delete":

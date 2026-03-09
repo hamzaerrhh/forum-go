@@ -15,7 +15,7 @@ type Comment struct {
 	Created_at              time.Time
 	Text                    string
 	LikeCount, DislikeCount int
-	IsLiked                 int // 1:liked, 0:disliked, -1:none
+	IsLiked                 int // 1:liked, 0:none, -1:disliked
 }
 
 func GetCommentsByPost(postId int) ([]Comment, error) {
