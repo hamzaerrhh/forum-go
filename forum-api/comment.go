@@ -25,6 +25,9 @@ func GetCommentsByPost(postId int) ([]Comment, error) {
 		"SELECT id, user_id, created_at, text FROM Comments WHERE post_id = ?",
 		postId,
 	)
+	if err != nil {
+    return nil, fmt.Errorf("getCommentsByPost error: %v", err)
+}
 	defer rows.Close() // release database resources
 	for rows.Next() {
 		var c Comment
