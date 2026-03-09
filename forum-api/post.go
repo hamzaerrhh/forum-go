@@ -65,7 +65,9 @@ func GetPosts() ([]Post, error) {
 			"SELECT u.name FROM users u INNER JOIN posts p ON p.user_id = u.id WHERE p.id = ?",
 			p.Id,
 		).Scan(&p.Username)
-
+		if err != nil {
+			return nil, fmt.Errorf("getPosts error: %v", err)
+		}
 		// get timeago
 		p.TimeAgo = timeAgo(p.Created_at)
 
