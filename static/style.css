@@ -275,9 +275,11 @@ button {
   display: none;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem 1.25rem;
+  padding: 1.25rem;
   margin-bottom: 1.5rem;
   background: var(--surface);
+  overflow: visible;
+  height: auto;
 }
 
 .sidebar-mobile h3 {
@@ -287,6 +289,12 @@ button {
   letter-spacing: 0.12em;
   color: var(--text-muted);
   margin-bottom: 1rem;
+}
+
+.sidebar-mobile .filter-group {
+  margin-bottom: 1rem;
+  overflow: visible;
+  max-height: none;
 }
 
 .mobile-categories-grid {
@@ -735,14 +743,13 @@ textarea {
 /* ── Create Post Categories Grid ──────────────────────────────── */
 .create-post .categories {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1rem;
   margin: 0.5rem 0 0.75rem;
-
 }
 
 .create-post .categories label {
@@ -757,7 +764,6 @@ textarea {
   border: 1px solid transparent;
   border-radius: var(--radius);
   transition: all 0.15s ease;
-  white-space: nowrap;
 }
 
 .create-post .categories label:hover {
@@ -818,8 +824,7 @@ textarea {
 /* ── Responsive Adjustments ───────────────────────────────────── */
 @media (max-width: 768px) {
   .create-post .categories {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    max-height: 180px;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .create-post button[type='submit'] {
@@ -830,7 +835,7 @@ textarea {
 
 @media (max-width: 480px) {
   .create-post .categories {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.35rem;
     padding: 0.75rem;
   }
