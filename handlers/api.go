@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -36,8 +35,6 @@ if len(title) > 255||len(text) > 1000 {
 		HandleError(w, http.StatusBadRequest, "At least one category must be selected")
 		return
 	}
-
-	fmt.Println("data", title, text, categories)
 
 	var userId int
 	cookie, err := r.Cookie("session_id")
