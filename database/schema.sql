@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS SESSIONS (
     id TEXT PRIMARY KEY UNIQUE, -- uuid
     expires_at DATETIME NOT NULL,
     user_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- POSTS
@@ -22,13 +22,30 @@ CREATE TABLE IF NOT EXISTS POSTS (
     title      TEXT     NULL    ,
     text       TEXT     NULL    ,
     PRIMARY KEY (id AUTOINCREMENT),
-    FOREIGN KEY (user_id) REFERENCES USERS (id)
+    FOREIGN KEY (user_id) REFERENCES USERS (id) ON DELETE CASCADE
 );
+
 ---CATEGORY 
 CREATE TABLE IF NOT EXISTS CATEGORY (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
 );
+
+INSERT OR IGNORE INTO CATEGORY (name) VALUES 
+('General'),
+('Lifestyle'),
+('Health & Fitness'),
+('Travel'),
+('Food & Cooking'),
+('Education'),
+('Business'),
+('Finance'),
+('Entertainment'),
+('Sports'),
+('Personal Dev'),
+('Culture'),
+('News');
+
 ---category post 
 CREATE TABLE IF NOT EXISTS POST_CATEGORY (
     post_id INTEGER NOT NULL,
@@ -78,17 +95,3 @@ CREATE TABLE IF NOT EXISTS rate_limits (
     last_request DATETIME NOT NULL,
     PRIMARY KEY (ip, route)
 );
-INSERT OR IGNORE INTO CATEGORY (name) VALUES 
-('General'),
-('Lifestyle'),
-('Health & Fitness'),
-('Travel'),
-('Food & Cooking'),
-('Education'),
-('Business'),
-('Finance'),
-('Entertainment'),
-('Sports'),
-('Personal Dev'),
-('Culture'),
-('News');
