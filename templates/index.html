@@ -87,11 +87,12 @@
         <section class="create-post">
           <h2>Create New Post</h2>
           <form action="/posts/create" method="POST">
-            <input type="text" name="title" placeholder="Post title" required />
+            <input type="text" name="title" placeholder="Post title" maxlength="255" required />
 
             <textarea
               name="text"
               placeholder="Write your post..."
+              maxlength="1000"
               required
             ></textarea>
 
@@ -228,7 +229,7 @@
               <div class="add-comment registered-only">
                 <form action="/comments/create" method="POST">
                   <input type="hidden" name="postId" value="{{.Id}}" />
-                  <input name="text" type="text" placeholder="Write a comment..." required />
+                  <input name="text" type="text" placeholder="Write a comment..." maxlength="1000" required/>
                   <button type="submit" class="btn small primary">Comment</button>
                 </form>
               </div>
