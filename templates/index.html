@@ -19,30 +19,11 @@
       <div class="logo">01Forum</div>
       <div class="auth-buttons">
         {{if .IsLoggedIn}}
-        <!-- Show when logged in -->
-        <!-- <div class="page">
-                <nav>
-                    <span class="logo">Zone</span>
-                    <form action="/Logout" method="POST">
-                        <button type="submit" class="btn-logout">Logout</button>
-                    </form>
-                </nav>
-
-                <div class="card" style="max-width: 100%;">
-                    <h1>Welcome, {{.User.Name}}</h1>
-                    <p class="subtitle">You are now logged in.</p>
-                </div>
-            </div> -->
         <span class="welcome">Welcome, {{.User.Name}}</span>
         <form action="/logout" method="POST">
           <button type="submit" class="btn logout">Logout</button>
         </form>
         {{else}}
-        <!-- Show when NOT logged in -->
-        <!-- <div class="link-row" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
-                <a href="/Login">Login</a>
-                <a href="/Register">Register</a>
-            </div> -->
         <a type="button" href="/login" class="btn login">Login</a>
         <a type="button" href="/register" class="btn register">Register</a>
         {{end}}
@@ -50,7 +31,7 @@
     </header>
 
     <div class="container">
-      <!-- FILTER SECTION -->
+      <!-- FILTER SECTION (desktop sidebar) -->
       <aside class="sidebar">
         <h3>Filter Posts</h3>
 
@@ -80,66 +61,19 @@
               id="input-my-liked-post"
             />
 
-            <label
-              ><input type="checkbox" name="categories" value="General" />
-              General</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Lifestyle" />
-              Lifestyle</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="categories"
-                value="Health & Fitness"
-              />
-              Health & Fitness</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Travel" />
-              Travel</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="categories"
-                value="Food & Cooking"
-              />
-              Food & Cooking</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Education" />
-              Education</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Business" />
-              Business</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Finance" />
-              Finance</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Entertainment" />
-              Entertainment</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Sports" />
-              Sports</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Personal Dev" />
-              Personal Dev</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="Culture" />
-              Culture</label
-            >
-            <label
-              ><input type="checkbox" name="categories" value="News" />
-              News</label
-            >
+            <label><input type="checkbox" name="categories" value="General" /> General</label>
+            <label><input type="checkbox" name="categories" value="Lifestyle" /> Lifestyle</label>
+            <label><input type="checkbox" name="categories" value="Health & Fitness" /> Health & Fitness</label>
+            <label><input type="checkbox" name="categories" value="Travel" /> Travel</label>
+            <label><input type="checkbox" name="categories" value="Food & Cooking" /> Food & Cooking</label>
+            <label><input type="checkbox" name="categories" value="Education" /> Education</label>
+            <label><input type="checkbox" name="categories" value="Business" /> Business</label>
+            <label><input type="checkbox" name="categories" value="Finance" /> Finance</label>
+            <label><input type="checkbox" name="categories" value="Entertainment" /> Entertainment</label>
+            <label><input type="checkbox" name="categories" value="Sports" /> Sports</label>
+            <label><input type="checkbox" name="categories" value="Personal Dev" /> Personal Dev</label>
+            <label><input type="checkbox" name="categories" value="Culture" /> Culture</label>
+            <label><input type="checkbox" name="categories" value="News" /> News</label>
 
             <button type="submit" class="filter-btn">Apply Filters</button>
             <a href="/" class="clear-btn">Clear Filters</a>
@@ -161,84 +95,57 @@
             ></textarea>
 
             <div class="categories">
-              <label
-                ><input
-                  type="checkbox"
-                  name="categories"
-                  value="General"
-                  checked
-                />
-                General</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="Lifestyle" />
-                Lifestyle</label
-              >
-              <label
-                ><input
-                  type="checkbox"
-                  name="categories"
-                  value="Health & Fitness"
-                />
-                Health & Fitness</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="Travel" />
-                Travel</label
-              >
-              <label
-                ><input
-                  type="checkbox"
-                  name="categories"
-                  value="Food & Cooking"
-                />
-                Food & Cooking</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="Education" />
-                Education</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="Business" />
-                Business</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="Finance" />
-                Finance</label
-              >
-              <label
-                ><input
-                  type="checkbox"
-                  name="categories"
-                  value="Entertainment"
-                />
-                Entertainment</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="Sports" />
-                Sports</label
-              >
-              <label
-                ><input
-                  type="checkbox"
-                  name="categories"
-                  value="Personal Dev"
-                />
-                Personal Dev</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="Culture" />
-                Culture</label
-              >
-              <label
-                ><input type="checkbox" name="categories" value="News" />
-                News</label
-              >
+              <label><input type="checkbox" name="categories" value="General" checked /> General</label>
+              <label><input type="checkbox" name="categories" value="Lifestyle" /> Lifestyle</label>
+              <label><input type="checkbox" name="categories" value="Health & Fitness" /> Health & Fitness</label>
+              <label><input type="checkbox" name="categories" value="Travel" /> Travel</label>
+              <label><input type="checkbox" name="categories" value="Food & Cooking" /> Food & Cooking</label>
+              <label><input type="checkbox" name="categories" value="Education" /> Education</label>
+              <label><input type="checkbox" name="categories" value="Business" /> Business</label>
+              <label><input type="checkbox" name="categories" value="Finance" /> Finance</label>
+              <label><input type="checkbox" name="categories" value="Entertainment" /> Entertainment</label>
+              <label><input type="checkbox" name="categories" value="Sports" /> Sports</label>
+              <label><input type="checkbox" name="categories" value="Personal Dev" /> Personal Dev</label>
+              <label><input type="checkbox" name="categories" value="Culture" /> Culture</label>
+              <label><input type="checkbox" name="categories" value="News" /> News</label>
             </div>
 
             <button type="submit" class="btn primary">Publish</button>
           </form>
         </section>
+
+        <!-- MOBILE FILTER (visible only on small screens, below create-post) -->
+        <aside class="sidebar-mobile">
+          <h3>Filter Posts</h3>
+          <form method="GET" action="/">
+            <div class="filter-group registered-only">
+              <button type="button" name="my-creat-postes" class="filter-btn">My Created Posts</button>
+              <button type="button" name="my-liked-post" class="filter-btn">Posts I Liked</button>
+            </div>
+            <div class="filter-group">
+              <h4>By Category</h4>
+              <input type="hidden" name="my-creat-postes" id="input-my-creat-postes-mobile" />
+              <input type="hidden" name="my-liked-post" id="input-my-liked-post-mobile" />
+              <div class="mobile-categories-grid">
+                <label><input type="checkbox" name="categories" value="General" /> General</label>
+                <label><input type="checkbox" name="categories" value="Lifestyle" /> Lifestyle</label>
+                <label><input type="checkbox" name="categories" value="Health & Fitness" /> Health & Fitness</label>
+                <label><input type="checkbox" name="categories" value="Travel" /> Travel</label>
+                <label><input type="checkbox" name="categories" value="Food & Cooking" /> Food & Cooking</label>
+                <label><input type="checkbox" name="categories" value="Education" /> Education</label>
+                <label><input type="checkbox" name="categories" value="Business" /> Business</label>
+                <label><input type="checkbox" name="categories" value="Finance" /> Finance</label>
+                <label><input type="checkbox" name="categories" value="Entertainment" /> Entertainment</label>
+                <label><input type="checkbox" name="categories" value="Sports" /> Sports</label>
+                <label><input type="checkbox" name="categories" value="Personal Dev" /> Personal Dev</label>
+                <label><input type="checkbox" name="categories" value="Culture" /> Culture</label>
+                <label><input type="checkbox" name="categories" value="News" /> News</label>
+              </div>
+              <button type="submit" class="filter-btn">Apply Filters</button>
+              <a href="/" class="clear-btn">Clear Filters</a>
+            </div>
+          </form>
+        </aside>
 
         <!-- POSTS LIST -->
         <section class="posts">
@@ -252,33 +159,26 @@
                 {{if and $.IsLoggedIn (eq $.User.Id .UserId)}}
                 <form method="post" action="/api/posts/{{.Id}}/delete">
                   <button class="btn small danger" type="submit">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 448 512"
-                    >
-                      <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                      <path
-                        d="M136.7 5.9L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-8.7-26.1C306.9-7.2 294.7-16 280.9-16L167.1-16c-13.8 0-26 8.8-30.4 21.9zM416 144L32 144 53.1 467.1C54.7 492.4 75.7 512 101 512L347 512c25.3 0 46.3-19.6 47.9-44.9L416 144z"
-                      />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                      <path d="M136.7 5.9L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-8.7-26.1C306.9-7.2 294.7-16 280.9-16L167.1-16c-13.8 0-26 8.8-30.4 21.9zM416 144L32 144 53.1 467.1C54.7 492.4 75.7 512 101 512L347 512c25.3 0 46.3-19.6 47.9-44.9L416 144z"/>
                     </svg>
                   </button>
                 </form>
                 {{end}}
               </div>
 
-              <span class="post-meta"
-                >Posted by {{.Username}} · {{.TimeAgo}}</span
-              >
+              <!-- Categories moved here, inside post-header -->
+              <div class="post-categories">
+                {{range .Categories}}
+                <span class="category">{{.}}</span>
+                {{end}}
+              </div>
+
+              <span class="post-meta">Posted by {{.Username}} · {{.TimeAgo}}</span>
             </div>
 
             <div class="post-body">
               <p>{{.Text}}</p>
-            </div>
-
-            <div class="post-categories">
-              {{range .Categories}}
-              <span class="category">{{.}}</span>
-              {{end}}
             </div>
 
             <div class="post-actions">
@@ -297,36 +197,25 @@
               {{range .Comments}}
               <div class="comment" data-comment-id="{{.Id}}">
                 <div class="delete-block">
-                  <p>
-                    <strong>{{.Username}} · {{.TimeAgo}}</strong>
-                    <br />
-                    {{.Text}}
-                  </p>
+                  <div>
+                    <span class="comment-meta">Posted by {{.Username}} · {{.TimeAgo}}</span>
+                    <p class="comment-text">{{.Text}}</p>
+                  </div>
                   {{if and $.IsLoggedIn (eq $.User.Id .UserId)}}
                   <form method="post" action="/api/comments/{{.Id}}/delete">
                     <button class="btn small danger" type="submit">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                      >
-                        <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                        <path
-                          d="M136.7 5.9L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-8.7-26.1C306.9-7.2 294.7-16 280.9-16L167.1-16c-13.8 0-26 8.8-30.4 21.9zM416 144L32 144 53.1 467.1C54.7 492.4 75.7 512 101 512L347 512c25.3 0 46.3-19.6 47.9-44.9L416 144z"
-                        />
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M136.7 5.9L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-8.7-26.1C306.9-7.2 294.7-16 280.9-16L167.1-16c-13.8 0-26 8.8-30.4 21.9zM416 144L32 144 53.1 467.1C54.7 492.4 75.7 512 101 512L347 512c25.3 0 46.3-19.6 47.9-44.9L416 144z"/>
                       </svg>
                     </button>
                   </form>
                   {{end}}
                 </div>
                 <div class="comment-actions">
-                  <button
-                    class="comment-like-btn small{{if eq .IsLiked 1}} active{{end}}"
-                  >
+                  <button class="comment-like-btn small{{if eq .IsLiked 1}} active{{end}}">
                     👍 {{.LikeCount}}
                   </button>
-                  <button
-                    class="comment-dislike-btn small{{if eq .IsLiked -1}} active{{end}}"
-                  >
+                  <button class="comment-dislike-btn small{{if eq .IsLiked -1}} active{{end}}">
                     👎 {{.DislikeCount}}
                   </button>
                 </div>
@@ -337,14 +226,8 @@
               <div class="add-comment registered-only">
                 <form action="/comments/create" method="POST">
                   <input type="hidden" name="postId" value="{{.Id}}" />
-                  <input
-                    name="text"
-                    type="text"
-                    placeholder="Write a comment..."
-                  />
-                  <button type="submit" class="btn small primary">
-                    Comment
-                  </button>
+                  <input name="text" type="text" placeholder="Write a comment..." />
+                  <button type="submit" class="btn small primary">Comment</button>
                 </form>
               </div>
             </div>
@@ -359,15 +242,13 @@
       button.addEventListener('click', function () {
         this.classList.toggle('active');
 
-        // Map button names to hidden inputs
         const hiddenInputs = {
           'my-creat-postes': document.getElementById('input-my-creat-postes'),
           'my-liked-post': document.getElementById('input-my-liked-post'),
         };
 
-        // Update hidden inputs based on active buttons
         Object.keys(hiddenInputs).forEach((name) => {
-          hiddenInputs[name].value = ''; // reset
+          if (hiddenInputs[name]) hiddenInputs[name].value = '';
         });
 
         const activeButtons = Array.from(
@@ -381,36 +262,4 @@
       });
     });
   </script>
-  <!-- <script>
-  document.querySelectorAll(".filter-btn").forEach(button => {
-    button.addEventListener("click", function () {
-      // Toggle active class
-      this.classList.toggle("active");
-
-      // Get all active buttons
-      const activeButtons = Array.from(document.querySelectorAll(".filter-btn.active"));
-
-      // Use URL and URLSearchParams to modify query safely
-      const url = new URL(window.location.href);
-      const params = url.searchParams;
-
-      // Clear previous custom filter params first (if any)
-      ['my-creat-postes', 'my-liked-post'].forEach(name => params.delete(name));
-
-      // Add active filters to query
-      activeButtons.forEach(btn => {
-        if (btn.name) {
-          params.set(btn.name, 'true');
-        }
-      });
-
-
-
-      // Update the URL without reloading the page
-      window.history.replaceState({}, '', url);
-
-      console.log("Updated URL:", url.toString());
-    });
-  });
-</script> -->
 </html>
