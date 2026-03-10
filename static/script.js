@@ -98,3 +98,29 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', handleCommentReactionsClick);
     });
 });
+
+// ================== Filters event listener ======================
+
+document.querySelectorAll('.filter-btn').forEach((button) => {
+    button.addEventListener('click', function () {
+        this.classList.toggle('active');
+
+        const hiddenInputs = {
+            'my-creat-postes': document.getElementById('input-my-creat-postes'),
+            'my-liked-post': document.getElementById('input-my-liked-post'),
+        };
+
+        Object.keys(hiddenInputs).forEach((name) => {
+            if (hiddenInputs[name]) hiddenInputs[name].value = '';
+        });
+
+        const activeButtons = Array.from(
+            document.querySelectorAll('.filter-btn.active'),
+        );
+        activeButtons.forEach((btn) => {
+            if (hiddenInputs[btn.name]) {
+            hiddenInputs[btn.name].value = 'true';
+            }
+        });
+    });
+});
