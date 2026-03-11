@@ -13,7 +13,7 @@ func RegisterRoutes() {
         "/",
         middlewares.RateLimit(
             handlers.Forum,
-            200*time.Millisecond, // fast enough for normal browsing
+            10*time.Millisecond, // fast enough for normal browsing
         ),
     )
 
