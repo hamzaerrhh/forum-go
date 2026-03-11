@@ -16,6 +16,8 @@ func main() {
 	}
 
 	http.HandleFunc("/static/", handlers.HandleStatic)
+	http.HandleFunc("/", handlers.Forum)
+
 	routing.RegisterRoutes()
 
 	fmt.Println("Server running on http://localhost:8080")
