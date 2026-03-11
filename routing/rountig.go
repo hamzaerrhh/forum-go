@@ -13,15 +13,7 @@ func RegisterRoutes() {
 		"/posts/create",
 		middlewares.RateLimit(
 			middlewares.CheckSessionCookie(handlers.CreatePost, true),
-			2*time.Second,
-		),
-	)
-
-	http.HandleFunc(
-		"/api/posts/{id}/{endpoint}",
-		middlewares.RateLimit(
-			middlewares.CheckSessionCookie(handlers.PostResolver, true),
-			100*time.Millisecond,
+			3*time.Second,
 		),
 	)
 
@@ -29,18 +21,11 @@ func RegisterRoutes() {
 		"/comments/create",
 		middlewares.RateLimit(
 			middlewares.CheckSessionCookie(handlers.CreateComment, true),
-			2*time.Second,
+			3*time.Second,
 		),
 	)
 
-	http.HandleFunc(
-		"/api/comments/{id}/{endpoint}",
-		middlewares.RateLimit(
-			middlewares.CheckSessionCookie(handlers.CommentResolver, true),
-			2*time.Second,
-		),
-	)
-
+	// brute force targets
 	http.HandleFunc(
 		"/login",
 		middlewares.RateLimit(
@@ -58,10 +43,18 @@ func RegisterRoutes() {
 	)
 
 	http.HandleFunc(
-		"/logout",
-		middlewares.RateLimit(
-			middlewares.CheckSessionCookie(handlers.Logout, true),
-			2*time.Second,
-		),
+		"/api/posts/{id}/{endpoint}",
+		middlewares.CheckSessionCookie(handlers.PostResolver, true),
 	)
+
+	http.HandleFunc(
+		"/api/comments/{id}/{endpoint}",
+		middlewares.CheckSessionCookie(handlers.CommentResolver, true),
+	)
+
+	http.HandleFunc(
+		"/logout",
+		middlewares.CheckSessionCookie(handlers.Logout, true),
+	)
+
 }
