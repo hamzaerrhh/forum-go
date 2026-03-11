@@ -52,6 +52,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
 			return
 		}
+		if len(user.confarmPassword) < 6 || len(user.confarmPassword) > 20 {
+			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
+			return
+		}
 		if len(user.Email) < 5 || len(user.Email) > 100 {
 			HandleError(w, http.StatusBadRequest, "Email must be between 5 and 100 characters")
 			return
