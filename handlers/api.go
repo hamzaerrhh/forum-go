@@ -26,7 +26,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		HandleError(w, http.StatusBadRequest, "Title and text cannot be empty")
 		return
 	}
-if len(title) > 255||len(text) > 1000 {
+	if len(title) > 255 || len(text) > 1000 {
 		HandleError(w, http.StatusBadRequest, "Title cannot exceed 255 characters")
 		return
 	}
@@ -36,21 +36,12 @@ if len(title) > 255||len(text) > 1000 {
 		return
 	}
 
-	var userId int
-	cookie, err := r.Cookie("session_id")
+	cookie, _ := r.Cookie("session_id")
+	userId, err := api.GetUserIDFromCookie(cookie.Value)
 	if err != nil {
-		HandleError(w, http.StatusUnauthorized, "You must be logged in to create a post")
-		return
-	}
-
-	if err = database.Database.QueryRow(
-		"SELECT user_id FROM sessions WHERE id = ?",
-		cookie.Value,
-	).Scan(&userId); err != nil {
 		HandleError(w, http.StatusUnauthorized, "Invalid or expired session")
 		return
 	}
-
 	tx, err := database.Database.Begin()
 	if err != nil {
 		HandleError(w, http.StatusInternalServerError, "Could not create post")
@@ -124,7 +115,7 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		HandleError(w, http.StatusBadRequest, "Invalid post")
 		return
 	}
-if len(text) > 1000 {
+	if len(text) > 1000 {
 		HandleError(w, http.StatusBadRequest, "Comment cannot exceed 1000 characters")
 		return
 	}
@@ -135,21 +126,12 @@ if len(text) > 1000 {
 		return
 	}
 
-	cookie, err := r.Cookie("session_id")
+	cookie, _ := r.Cookie("session_id")
+	userId, err := api.GetUserIDFromCookie(cookie.Value)
 	if err != nil {
-		HandleError(w, http.StatusUnauthorized, "You must be logged in to comment")
-		return
-	}
-
-	var userId int
-	if err = database.Database.QueryRow(
-		"SELECT user_id FROM sessions WHERE id = ?",
-		cookie.Value,
-	).Scan(&userId); err != nil {
 		HandleError(w, http.StatusUnauthorized, "Invalid or expired session")
 		return
 	}
-
 	if _, err = database.Database.Exec(
 		"INSERT INTO comments (user_id, post_id, created_at, text) VALUES (?, ?, ?, ?)",
 		userId,
@@ -175,7 +157,7 @@ func PostResolver(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := getUser(cookie.Value)
+	userId, err := api.GetUserIDFromCookie(cookie.Value)
 	if err != nil {
 		HandleError(w, http.StatusUnauthorized, "Invalid session")
 		return
@@ -193,7 +175,7 @@ func PostResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		if err := api.ReactToPost(user.Id, postId, 1); err != nil {
+		if err := api.ReactToPost(userId, postId, 1); err != nil {
 			HandleError(w, http.StatusInternalServerError, "Could not react to post")
 			return
 		}
@@ -204,7 +186,7 @@ func PostResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		if err := api.ReactToPost(user.Id, postId, -1); err != nil {
+		if err := api.ReactToPost(userId, postId, -1); err != nil {
 			HandleError(w, http.StatusInternalServerError, "Could not react to post")
 			return
 		}
@@ -215,7 +197,7 @@ func PostResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		if err := api.DeletePost(postId, user.Id); err != nil {
+		if err := api.DeletePost(postId, userId); err != nil {
 			HandleError(w, http.StatusForbidden, err.Error())
 			return
 		}
@@ -235,7 +217,7 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := getUser(cookie.Value)
+	userId, err := api.GetUserIDFromCookie(cookie.Value)
 	if err != nil {
 		HandleError(w, http.StatusUnauthorized, "Invalid session")
 		return
@@ -253,7 +235,7 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		if err := api.ReactToComment(user.Id, commentId, 1); err != nil {
+		if err := api.ReactToComment(userId, commentId, 1); err != nil {
 			HandleError(w, http.StatusInternalServerError, "Could not react to comment")
 			return
 		}
@@ -264,7 +246,7 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		if err := api.ReactToComment(user.Id, commentId, -1); err != nil {
+		if err := api.ReactToComment(userId, commentId, -1); err != nil {
 			HandleError(w, http.StatusInternalServerError, "Could not react to comment")
 			return
 		}
@@ -275,7 +257,7 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-		if err := api.DeleteComment(commentId, user.Id); err != nil {
+		if err := api.DeleteComment(commentId, userId); err != nil {
 			HandleError(w, http.StatusForbidden, err.Error())
 			return
 		}

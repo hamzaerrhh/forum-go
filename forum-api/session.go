@@ -17,7 +17,7 @@ func GetUserIDFromCookie(cookie string) (int, error) {
 	err := database.Database.QueryRow(`
 		SELECT user_id
 		FROM SESSIONS
-		WHERE id = ? AND expires_at > DATETIME('now')
+		WHERE id = ?
 	`, cookie).Scan(&userID)
 	if err != nil {
 		return 0, err
