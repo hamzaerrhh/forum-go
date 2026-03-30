@@ -142,6 +142,63 @@ a:hover {
   border-color: var(--accent-dim);
 }
 
+/* start */
+
+.social-auth {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 15px 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #777;
+}
+
+.divider:not(:empty)::before {
+  margin-right: 10px;
+}
+
+.divider:not(:empty)::after {
+  margin-left: 10px;
+}
+
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn.social {
+  justify-content: center;
+  padding: 0.7rem;
+
+  border-color: var(--border-loud);
+  color: var(--text);
+}
+.btn.social:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn.social img,
+.btn.social svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* end */
+
 .btn.logout {
   color: var(--text-muted);
   border-color: var(--border);
@@ -667,7 +724,7 @@ textarea {
   color: var(--text-muted);
 }
 
-.card .btn,
+.card .btn[type='submit'],
 .card button[type='submit'] {
   width: 100%;
   justify-content: center;
