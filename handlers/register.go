@@ -10,12 +10,14 @@ import (
 )
 
 type User struct {
-	Id              int
-	Name            string
-	Email           string
+	Id              int    `json:"id"`   // check for google
+	Name            string `json:"name"` // name or username: problem for providers!
+	Email           string `json:"email"`
 	Password        string
-	confarmPassword string
+	confirmPassword string
 	Message         string
+	// Picture string `json:"picture"`    // gmail picture: sometimes cannot be loaded!
+	// Avatar  string `json:"avatar_url"` // github avatar
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -27,12 +29,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		RenderTemplate(w, 200, "register.html", nil)
+
 	case http.MethodPost:
 		user := User{
 			Name:            strings.TrimSpace(r.FormValue("name")),
 			Email:           strings.TrimSpace(r.FormValue("email")),
 			Password:        r.FormValue("password"),
-			confarmPassword: r.FormValue("confirm_password"),
+			confirmPassword: r.FormValue("confirm_password"),
 		}
 
 		// Input validation
@@ -48,25 +51,25 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusBadRequest, "Invalid email address")
 			return
 		}
-		if len(user.Password) < 6 || len(user.Password) > 20 {
-			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
-			return
-		}
-		if len(user.confarmPassword) < 6 || len(user.confarmPassword) > 20 {
-			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
-			return
-		}
 		if len(user.Email) < 5 || len(user.Email) > 100 {
 			HandleError(w, http.StatusBadRequest, "Email must be between 5 and 100 characters")
 			return
 		}
-		if user.Password != user.confarmPassword {
+		if len(user.Password) < 6 || len(user.Password) > 20 {
+			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
+			return
+		}
+		if len(user.confirmPassword) < 6 || len(user.confirmPassword) > 20 {
+			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
+			return
+		}
+		if user.Password != user.confirmPassword {
 			user.Message = "password and confarm password do not match"
 			RenderTemplate(w, 400, "register.html", user)
 			return
 		}
-		// Check if email already exists
-		// Check email
+
+		// Check email availability
 		var emailExists bool
 		err := database.Database.QueryRow(
 			"SELECT EXISTS(SELECT * FROM users WHERE email = ?)", user.Email,
@@ -76,12 +79,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if emailExists {
-			user.Message = "Email already registered"
+			user.Message = "Email already registered" // not good practice
 			RenderTemplate(w, 400, "register.html", user)
 			return
 		}
 
-		// Check username
+		// Check username availability
 		var nameExists bool
 		err = database.Database.QueryRow(
 			"SELECT EXISTS(SELECT * FROM users WHERE name = ?)", user.Name,

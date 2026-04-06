@@ -185,7 +185,10 @@ Seed categories loaded automatically on startup: General, Lifestyle, Health & Fi
 
 * mandatory:
   1. working filters for non logged-in users
-  2. Add credentials to database
+  2. account created with provider, but tries to access it with password
 
 * optional:
-  1. 
+  1. check email format
+  2. text length ranges
+  3. favicon.ico
+  4. link to home in website logo

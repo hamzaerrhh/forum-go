@@ -28,13 +28,13 @@ type TokenResponse struct {
 	Error string `json:"error"`
 }
 
-type UserInfo struct {
-	ID      int    `json:"id"` // check for google
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Picture string `json:"picture"` // sometimes cannot be loaded!
-	Avatar  string `json:"avatar_url"`
-}
+// type UserInfo struct {
+// 	ID      int    `json:"id"` // check for google
+// 	Name    string `json:"name"`
+// 	Email   string `json:"email"`
+// 	Picture string `json:"picture"`    // gmail picture: sometimes cannot be loaded!
+// 	Avatar  string `json:"avatar_url"` // github avatar
+// }
 
 func exchangeCode(provider, tokenURL, client_id, client_secret, code string) (*TokenResponse, error) {
 	var resp *http.Response
@@ -111,7 +111,7 @@ func exchangeCode(provider, tokenURL, client_id, client_secret, code string) (*T
 	// return &t, nil
 }
 
-func fetchUserInfo(userInfoURL, accessToken string) (*UserInfo, error) {
+func fetchUserInfo(userInfoURL, accessToken string) (*User, error) { // UserInfo
 	// req, _ := http.NewRequest("GET", userURL, nil)
 	// req.Header.Set("Authorization", "Bearer "+accessToken)
 
@@ -145,7 +145,7 @@ func fetchUserInfo(userInfoURL, accessToken string) (*UserInfo, error) {
 
 	userBody, _ := io.ReadAll(userResp.Body)
 
-	var user UserInfo
+	var user User // UserInfo
 	json.Unmarshal(userBody, &user)
 	return &user, nil
 }

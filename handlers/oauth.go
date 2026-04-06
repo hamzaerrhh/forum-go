@@ -1,9 +1,14 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
+	"time"
+
+	"forum/database"
+
+	"github.com/google/uuid"
 )
 
 var (
@@ -119,20 +124,87 @@ func OAuthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 5. At this point, create your session / JWT / cookie
-	// For demo, just display the user info
-	w.Header().Set("Content-Type", "text/html")
-	if provider == "google" {
-		fmt.Fprintf(w, `<h2>Logged in!</h2>
-			<p>Name: %s</p>
-			<p>Email: %s</p>
-			<img src="%s">`,
-			user.Name, user.Email, user.Picture)
-	} else {
-		fmt.Fprintf(w, `<h2>Logged in!</h2>
-			<p>Name: %s</p>
-			<p>Email: %s</p>
-			<img src="%s">`,
-			user.Name, user.Email, user.Avatar)
+	// 5. check email and username availability
+	// Check email: code from register.go
+	var emailExists bool
+	var nameExists bool = true
+	err = database.Database.QueryRow(
+		"SELECT EXISTS(SELECT * FROM users WHERE email = ?)", user.Email,
+	).Scan(&emailExists)
+	if err != nil {
+		HandleError(w, http.StatusInternalServerError, "Database error")
+		return
 	}
+	var newUsername string
+	var i int
+	if !emailExists {
+		// check username & generate alternatives
+		for nameExists {
+			// add suffix for username, and result shouldnt exist
+			if newUsername == "" {
+				newUsername = user.Name
+			} else {
+				newUsername = user.Name + "+" + strconv.Itoa(i)
+				i++
+			}
+			err = database.Database.QueryRow(
+				"SELECT EXISTS(SELECT * FROM users WHERE name = ?)", newUsername,
+			).Scan(&nameExists)
+			if err != nil {
+				HandleError(w, http.StatusInternalServerError, "Database error")
+				return
+			}
+		}
+
+		// create user
+		user.Name = newUsername
+		_, err = database.Database.Exec(
+			"INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+			user.Name,
+			user.Email,
+			nil,
+		)
+	}
+
+	// 6. generate toke based on email not username (username is the one in db)
+	// ************* code from login.go ****************
+	var userID int
+
+	err = database.Database.QueryRow(
+		"SELECT id FROM users WHERE email = ?", user.Email,
+	).Scan(&userID)
+	// if err != nil {
+	// 	user := User{Message: "Invalid email/username or password"}
+	// 	RenderTemplate(w, 400, "login.html", user)
+	// 	return
+	// }
+
+	// Delete any existing sessions for this user
+	_, err = database.Database.Exec("DELETE FROM sessions WHERE user_id = ?", userID)
+	if err != nil {
+		HandleError(w, http.StatusInternalServerError, "Server error")
+		return
+	}
+
+	sessionID := uuid.New().String()
+	expiration := time.Now().Add(24 * time.Hour)
+
+	_, err = database.Database.Exec(
+		"INSERT INTO SESSIONS (id, expires_at, user_id) VALUES (?, ?, ?)",
+		sessionID, expiration, userID,
+	)
+	if err != nil {
+		HandleError(w, http.StatusInternalServerError, "Server error")
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_id",
+		Value:    sessionID,
+		Path:     "/",
+		HttpOnly: true,
+		Expires:  expiration,
+	})
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+	// **************************************************
 }
