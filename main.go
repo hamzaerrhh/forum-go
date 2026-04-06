@@ -9,7 +9,7 @@ import (
 
 	"forum/database"
 	"forum/handlers"
-	"forum/routing"
+	"forum/routes"
 )
 
 func main() {
@@ -21,13 +21,13 @@ func main() {
 		log.Fatalf("Database initialization failed: %v", err)
 	}
 
-	http.HandleFunc("/static/", handlers.HandleStatic)
+	http.HandleFunc("/static/", handlers.Static)
 	http.HandleFunc("/", handlers.Forum)
 
-	http.HandleFunc("/auth/{provider}", handlers.OAuthLoginHandler)
-	http.HandleFunc("/auth/{provider}/callback", handlers.OAuthCallbackHandler)
+	http.HandleFunc("/auth/{provider}", handlers.OAuthLogin)
+	http.HandleFunc("/auth/{provider}/callback", handlers.OAuthCallback)
 
-	routing.RegisterRoutes()
+	routes.RegisterRoutes()
 
 	fmt.Println("Server running on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

@@ -10,17 +10,17 @@ import (
 )
 
 type Post struct {
-	Id int
-	UserId int
-	Username string
-	Created_at time.Time
-	TimeAgo string
-	Title string
-	Text string
+	Id                      int
+	UserId                  int
+	Username                string
+	Created_at              time.Time
+	TimeAgo                 string
+	Title                   string
+	Text                    string
 	LikeCount, DislikeCount int
-	IsLiked int // 1:liked, 0:none, -1:disliked
-	Comments []Comment
-	Categories []string
+	IsLiked                 int // 1:liked, 0:none, -1:disliked
+	Comments                []Comment
+	Categories              []string
 }
 
 func timeAgo(t time.Time) string {
@@ -43,7 +43,7 @@ func timeAgo(t time.Time) string {
 
 func GetPosts() ([]Post, error) {
 	var posts []Post
-		// here i will check the categories and filters
+	// here i will check the categories and filters
 
 	// Modified query to include user_id since we need it for categories
 
@@ -96,6 +96,7 @@ func GetPosts() ([]Post, error) {
 
 	return posts, nil
 }
+
 // this function is for filtrt posts
 
 func GetFiltrtPOst(userID int, categories []string, likedByMe, postedByMe bool) ([]Post, error) {
@@ -118,7 +119,7 @@ func GetFiltrtPOst(userID int, categories []string, likedByMe, postedByMe bool) 
 			placeholders = append(placeholders, "?")
 			args = append(args, cat)
 		}
-		
+
 		conditions = append(conditions, "c.name IN ("+strings.Join(placeholders, ",")+")")
 	}
 	// Filter posts created by user
@@ -192,6 +193,7 @@ func GetFiltrtPOst(userID int, categories []string, likedByMe, postedByMe bool) 
 
 	return posts, nil
 }
+
 // Helper function to get categories for a specific post
 
 func GetCategoriesByPost(postId int) ([]string, error) {

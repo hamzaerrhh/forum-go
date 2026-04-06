@@ -10,12 +10,12 @@ import (
 )
 
 type User struct {
-	Id       int
-	Name     string
-	Email    string
-	Password string
+	Id              int
+	Name            string
+	Email           string
+	Password        string
 	confarmPassword string
-	Message  string
+	Message         string
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -29,9 +29,9 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		RenderTemplate(w, 200, "register.html", nil)
 	case http.MethodPost:
 		user := User{
-			Name:     strings.TrimSpace(r.FormValue("name")),
-			Email:    strings.TrimSpace(r.FormValue("email")),
-			Password: r.FormValue("password"),
+			Name:            strings.TrimSpace(r.FormValue("name")),
+			Email:           strings.TrimSpace(r.FormValue("email")),
+			Password:        r.FormValue("password"),
 			confarmPassword: r.FormValue("confirm_password"),
 		}
 
@@ -61,40 +61,40 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if user.Password != user.confarmPassword {
-				user.Message = "password and confarm password do not match"
+			user.Message = "password and confarm password do not match"
 			RenderTemplate(w, 400, "register.html", user)
 			return
 		}
 		// Check if email already exists
-// Check email
-var emailExists bool
-err := database.Database.QueryRow(
-    "SELECT EXISTS(SELECT * FROM users WHERE email = ?)", user.Email,
-).Scan(&emailExists)
-if err != nil {
-    HandleError(w, http.StatusInternalServerError, "Database error")
-    return
-}
-if emailExists {
-    user.Message = "Email already registered"
-    RenderTemplate(w, 400, "register.html", user)
-    return
-}
+		// Check email
+		var emailExists bool
+		err := database.Database.QueryRow(
+			"SELECT EXISTS(SELECT * FROM users WHERE email = ?)", user.Email,
+		).Scan(&emailExists)
+		if err != nil {
+			HandleError(w, http.StatusInternalServerError, "Database error")
+			return
+		}
+		if emailExists {
+			user.Message = "Email already registered"
+			RenderTemplate(w, 400, "register.html", user)
+			return
+		}
 
-// Check username
-var nameExists bool
-err = database.Database.QueryRow(
-    "SELECT EXISTS(SELECT * FROM users WHERE name = ?)", user.Name,
-).Scan(&nameExists)
-if err != nil {
-    HandleError(w, http.StatusInternalServerError, "Database error")
-    return
-}
-if nameExists {
-    user.Message = "Username already taken"
-    RenderTemplate(w, 400, "register.html", user)
-    return
-}
+		// Check username
+		var nameExists bool
+		err = database.Database.QueryRow(
+			"SELECT EXISTS(SELECT * FROM users WHERE name = ?)", user.Name,
+		).Scan(&nameExists)
+		if err != nil {
+			HandleError(w, http.StatusInternalServerError, "Database error")
+			return
+		}
+		if nameExists {
+			user.Message = "Username already taken"
+			RenderTemplate(w, 400, "register.html", user)
+			return
+		}
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		if err != nil {

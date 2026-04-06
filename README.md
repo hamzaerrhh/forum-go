@@ -178,3 +178,14 @@ Seed categories loaded automatically on startup: General, Lifestyle, Health & Fi
 - halhyane - [Gitea](https://learn.zone01oujda.ma/git/halhyane)
 - erezzoug - [Gitea](https://learn.zone01oujda.ma/git/erezzoug)
 - herraba - [Gitea](https://learn.zone01oujda.ma/git/herraba)
+
+---
+
+## TODO
+
+* mandatory:
+  1. working filters for non logged-in users
+  2. Add credentials to database
+
+* optional:
+  1. 

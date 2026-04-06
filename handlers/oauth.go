@@ -17,7 +17,7 @@ var (
 	GITHUB_CLIENT_SECRET string
 )
 
-func OAuthLoginHandler(w http.ResponseWriter, r *http.Request) {
+func OAuthLogin(w http.ResponseWriter, r *http.Request) {
 	var baseURL, client_id, scope string
 
 	provider := r.PathValue("provider")
@@ -65,7 +65,7 @@ func OAuthLoginHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, authURL, http.StatusTemporaryRedirect)
 }
 
-func OAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
+func OAuthCallback(w http.ResponseWriter, r *http.Request) {
 	var tokenURL, client_id, client_secret, userInfoURL string
 
 	provider := r.PathValue("provider")

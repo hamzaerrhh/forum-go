@@ -21,7 +21,7 @@ func Init() error {
 	if err := Database.Ping(); err != nil {
 		return fmt.Errorf("can't connect to database: %v", err)
 	}
-	
+
 	schema, err := os.ReadFile("./database/schema.sql")
 	if err != nil {
 		return fmt.Errorf("can't read schema: %v", err)

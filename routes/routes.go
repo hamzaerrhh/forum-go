@@ -1,4 +1,4 @@
-package routing
+package routes
 
 import (
 	"net/http"
@@ -56,5 +56,4 @@ func RegisterRoutes() {
 		"/logout",
 		middlewares.CheckSessionCookie(handlers.Logout, true),
 	)
-
 }

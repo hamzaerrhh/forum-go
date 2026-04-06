@@ -9,14 +9,14 @@ import (
 )
 
 type Comment struct {
-	Id int
-	UserId int
-	Username string
-	Created_at time.Time
-	TimeAgo string
-	Text string
+	Id                      int
+	UserId                  int
+	Username                string
+	Created_at              time.Time
+	TimeAgo                 string
+	Text                    string
 	LikeCount, DislikeCount int
-	IsLiked int // 1:liked, 0:none, -1:disliked
+	IsLiked                 int // 1:liked, 0:none, -1:disliked
 }
 
 func GetCommentsByPost(postId int) ([]Comment, error) {

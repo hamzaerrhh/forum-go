@@ -1,4 +1,3 @@
-// middlewares/rate_limit.go
 package middlewares
 
 import (
