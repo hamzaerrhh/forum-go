@@ -3,6 +3,7 @@
 FROM golang:1.24-alpine AS builder
 
 LABEL authors="erezzoug thakkou halhyane herraba" version="1.0"
+LABEL authors="thakkou herraba" version="2.0"
 
 RUN apk add --no-cache gcc musl-dev
 
