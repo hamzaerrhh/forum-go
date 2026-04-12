@@ -97,9 +97,8 @@ func GetPosts() ([]Post, error) {
 	return posts, nil
 }
 
-// this function is for filtrt posts
-
-func GetFiltrtPOst(userID int, categories []string, likedByMe, postedByMe bool) ([]Post, error) {
+// Returns filtered posts
+func GetFilteredPosts(userID int, categories []string, likedByMe, postedByMe bool) ([]Post, error) {
 	if len(categories) == 0 && userID == 0 {
 		postes, err := GetPosts()
 		return postes, err
@@ -116,19 +115,18 @@ func GetFiltrtPOst(userID int, categories []string, likedByMe, postedByMe bool) 
 
 	conditions := []string{}
 	args := []interface{}{}
-	// Filter by categories
 
+	// Filter by categories
 	if len(categories) > 0 {
 		placeholders := []string{}
 		for _, cat := range categories {
 			placeholders = append(placeholders, "?")
 			args = append(args, cat)
 		}
-
 		conditions = append(conditions, "c.name IN ("+strings.Join(placeholders, ",")+")")
 	}
-	// Filter posts created by user
 
+	// Filter posts created by user
 	if postedByMe && userID != 0 {
 		conditions = append(conditions, "p.user_id = ?")
 		args = append(args, userID)
@@ -200,7 +198,6 @@ func GetFiltrtPOst(userID int, categories []string, likedByMe, postedByMe bool) 
 }
 
 // Helper function to get categories for a specific post
-
 func GetCategoriesByPost(postId int) ([]string, error) {
 	var categories []string
 

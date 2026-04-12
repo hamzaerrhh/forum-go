@@ -37,13 +37,14 @@ func Forum(w http.ResponseWriter, r *http.Request) {
 
 	// Parse form
 	if err := r.ParseForm(); err != nil {
+		// ParseForm parses the raw query from the URL and updates r.Form
 		HandleError(w, http.StatusBadRequest, "Bad request")
 		return
 	}
 
 	categories := r.Form["categories"]
-	isLiked := r.FormValue("my-liked-post") == "true"
-	isByMe := r.FormValue("my-creat-postes") == "true"
+	isLiked := r.FormValue("my-liked-post") == "true"  // 1. needs format
+	isByMe := r.FormValue("my-creat-postes") == "true" // 2. needs format
 
 	var (
 		user   User
@@ -63,7 +64,7 @@ func Forum(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch posts
-	posts, err := api.GetFiltrtPOst(userId, categories, isLiked, isByMe)
+	posts, err := api.GetFilteredPosts(userId, categories, isLiked, isByMe)
 	if err != nil {
 		log.Println("error getting posts:", err)
 		posts = []api.Post{} // fallback

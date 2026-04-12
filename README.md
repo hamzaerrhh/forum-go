@@ -184,12 +184,17 @@ Seed categories loaded automatically on startup: General, Lifestyle, Health & Fi
 ## TODO
 
 * mandatory:
-  1. working filters for non logged-in users
-  2. account created with provider, but tries to access it with password
+  1. username + email sanitize regex
+  2. handle text area input correctly
+  3. handle error in post comment creation
 
 * optional:
-  1. check email format
-  2. text length ranges
+  1. steps for .env file
+  2. 
   3. favicon.ico
   4. link to home in website logo
   5. api path for posts and comments creation
+  6. special 'internal' folder
+  7. some errors returned on new page
+  8. use indexes on db
+  9. add github link to authors
