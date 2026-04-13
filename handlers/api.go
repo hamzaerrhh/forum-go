@@ -11,10 +11,12 @@ import (
 )
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/posts/create" {
+	if r.URL.Path != "/api/posts/create" {
+		HandleError(w, http.StatusNotFound, "Page not found")
 		return
 	}
 	if r.Method != http.MethodPost {
+		HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 
@@ -96,10 +98,12 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/comments/create" {
+	if r.URL.Path != "/api/comments/create" {
+		HandleError(w, http.StatusNotFound, "Page not found")
 		return
 	}
 	if r.Method != http.MethodPost {
+		HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 

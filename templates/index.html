@@ -90,7 +90,7 @@
         <!-- CREATE POST (REGISTERED USERS ONLY) -->
         <section class="create-post">
           <h2>Create New Post</h2>
-          <form action="/posts/create" method="POST">
+          <form action="/api/posts/create" method="POST">
             <input type="text" name="title" placeholder="Post title" maxlength="255" required />
 
             <textarea
@@ -156,7 +156,7 @@
 
         <!-- POSTS LIST -->
         <section class="posts">
-                    {{if gt (len .Posts) 0}}
+          {{if gt (len .Posts) 0}}
 
           {{range .Posts}}
           <!-- SINGLE POST -->
@@ -233,7 +233,7 @@
 
               <!-- Add Comment (REGISTERED USERS ONLY) -->
               <div class="add-comment registered-only">
-                <form action="/comments/create" method="POST">
+                <form action="/api/comments/create" method="POST">
                   <input type="hidden" name="postId" value="{{.Id}}" />
                   <input name="text" type="text" placeholder="Write a comment..." maxlength="1000" required/>
                   <button type="submit" class="btn small primary">Comment</button>
@@ -241,11 +241,11 @@
               </div>
             </div>
           </article>
-  {{end}}
-{{else}}
-  <h1 class="no-post">No posts right now</h1>
-{{end}}
-                </section>
+          {{end}}
+        {{else}}
+          <h1 class="no-post">No posts right now</h1>
+        {{end}}
+        </section>
       </main>
     </div>
   </body>

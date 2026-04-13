@@ -184,17 +184,16 @@ Seed categories loaded automatically on startup: General, Lifestyle, Health & Fi
 ## TODO
 
 * mandatory:
-  1. username + email sanitize regex
+  1. case insensitivity in username/email uniqueness
   2. handle text area input correctly
-  3. handle error in post comment creation
 
 * optional:
   1. steps for .env file
-  2. 
+  2. add github link to authors
   3. favicon.ico
   4. link to home in website logo
-  5. api path for posts and comments creation
+  5. refresh page at exact place for commit create
   6. special 'internal' folder
   7. some errors returned on new page
   8. use indexes on db
-  9. add github link to authors
+  9. categories are hardcoded in template

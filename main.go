@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -26,7 +25,7 @@ func main() {
 
 	routes.RegisterRoutes()
 
-	fmt.Println("Server running on http://localhost:8080")
+	log.Println("Server running on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}

@@ -10,7 +10,7 @@ import (
 
 func RegisterRoutes() {
 	http.HandleFunc(
-		"/posts/create",
+		"/api/posts/create",
 		middlewares.RateLimit(
 			middlewares.CheckSessionCookie(handlers.CreatePost, true),
 			3*time.Second,
@@ -18,7 +18,7 @@ func RegisterRoutes() {
 	)
 
 	http.HandleFunc(
-		"/comments/create",
+		"/api/comments/create",
 		middlewares.RateLimit(
 			middlewares.CheckSessionCookie(handlers.CreateComment, true),
 			3*time.Second,

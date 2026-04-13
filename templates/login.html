@@ -8,10 +8,12 @@
   </head>
   <body>
     <div class="card">
+      <a href="/" style="font-size: 12px;">← Back to Home</a>
       <h1>Login</h1>
       <p class="subtitle">Welcome back</p>
       {{if .Message}}
       <div class="form-error">{{.Message}}</div>
+      <br>
       {{end}}
       <form action="/login" method="POST">
         <div class="field">
@@ -59,7 +61,7 @@
       </div>
       <!-- end -->
 
-      <div class="link-row">No account? <a href="/register">Register</a></div>
+      <div class="link-row">No account? <a href="/register"> Register</a></div>
     </div>
   </body>
 </html>

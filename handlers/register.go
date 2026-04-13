@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"net/http"
+	"net/mail"
+	"regexp"
 	"strings"
 
 	"forum/database"
@@ -18,6 +20,21 @@ type User struct {
 	Message         string
 	// Picture string `json:"picture"`    // gmail picture: sometimes cannot be loaded!
 	// Avatar  string `json:"avatar_url"` // github avatar
+}
+
+func isValidUsername(username string) bool {
+	re := regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_ ]{1,49}$`)
+	// disallowing multiple spaces
+	return re.MatchString(username) && !strings.Contains(username, "  ")
+}
+
+func isValidEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return len(email) >= 5 && len(email) <= 100 && (err == nil)
+}
+
+func isValidPassword(password string) bool {
+	return len(password) >= 6 && len(password) <= 20
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -38,33 +55,27 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			confirmPassword: r.FormValue("confirm_password"),
 		}
 
+		var rules string = `
+. username :      2 ~ 50  chars
+. email (valid) : 5 ~ 100 chars
+. password :      6 ~ 20  chars`
+
 		// Input validation
-		if user.Name == "" || user.Email == "" || user.Password == "" {
-			HandleError(w, http.StatusBadRequest, "All fields are required")
+		// 1. check emptiness
+		if user.Name == "" || user.Email == "" || user.Password == "" || user.confirmPassword == "" {
+			user.Message = "All fields are required"
+			RenderTemplate(w, 400, "register.html", user)
 			return
 		}
-		if len(user.Name) < 2 || len(user.Name) > 50 {
-			HandleError(w, http.StatusBadRequest, "Name must be between 2 and 50 characters")
+		// 2. check validity
+		if !isValidUsername(user.Name) || !isValidEmail(user.Email) || !isValidPassword(user.Password) {
+			user.Message = rules
+			RenderTemplate(w, 400, "register.html", user)
 			return
 		}
-		if !strings.Contains(user.Email, "@") || !strings.Contains(user.Email, ".") {
-			HandleError(w, http.StatusBadRequest, "Invalid email address")
-			return
-		}
-		if len(user.Email) < 5 || len(user.Email) > 100 {
-			HandleError(w, http.StatusBadRequest, "Email must be between 5 and 100 characters")
-			return
-		}
-		if len(user.Password) < 6 || len(user.Password) > 20 {
-			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
-			return
-		}
-		if len(user.confirmPassword) < 6 || len(user.confirmPassword) > 20 {
-			HandleError(w, http.StatusBadRequest, "Password must be between 6 and 20 characters")
-			return
-		}
+		// 3. check password match
 		if user.Password != user.confirmPassword {
-			user.Message = "password and confarm password do not match"
+			user.Message = "password and confirm password do not match"
 			RenderTemplate(w, 400, "register.html", user)
 			return
 		}
