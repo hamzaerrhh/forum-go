@@ -21,6 +21,8 @@ func main() {
 	}
 
 	http.HandleFunc("/static/", handlers.Static)
+	http.HandleFunc("/uploads/", handlers.Static)
+
 	http.HandleFunc("/", handlers.Forum)
 
 	routes.RegisterRoutes()

@@ -21,6 +21,7 @@ type Post struct {
 	IsLiked                 int // 1:liked, 0:none, -1:disliked
 	Comments                []Comment
 	Categories              []string
+	Image                   string
 }
 
 func timeAgo(t time.Time) string {
@@ -48,7 +49,7 @@ func GetPosts() ([]Post, error) {
 	// Modified query to include user_id since we need it for categories
 
 	rows, err := database.Database.Query(
-		"SELECT id, user_id, created_at, title, text FROM posts ORDER BY created_at DESC",
+		"SELECT id, user_id, created_at, title, text, image FROM posts ORDER BY created_at DESC",
 	)
 	if err != nil {
 		return nil, fmt.Errorf("getPosts error: %v", err)
@@ -57,7 +58,7 @@ func GetPosts() ([]Post, error) {
 
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.Id, &p.UserId, &p.Created_at, &p.Title, &p.Text); err != nil {
+		if err := rows.Scan(&p.Id, &p.UserId, &p.Created_at, &p.Title, &p.Text, &p.Image); err != nil {
 			return nil, fmt.Errorf("getPosts scan error: %v", err)
 		}
 
@@ -107,7 +108,7 @@ func GetFilteredPosts(userID int, categories []string, likedByMe, postedByMe boo
 	db := database.Database
 
 	query := `
-		SELECT DISTINCT p.id, p.user_id, p.created_at, p.title, p.text
+		SELECT DISTINCT p.id, p.user_id, p.created_at, p.title, p.text, p.image
 		FROM POSTS p
 		LEFT JOIN POST_CATEGORY pc ON p.id = pc.post_id
 		LEFT JOIN CATEGORY c ON pc.category_id = c.id
@@ -157,7 +158,7 @@ func GetFilteredPosts(userID int, categories []string, likedByMe, postedByMe boo
 	for rows.Next() {
 		var p Post
 
-		if err := rows.Scan(&p.Id, &p.UserId, &p.Created_at, &p.Title, &p.Text); err != nil {
+		if err := rows.Scan(&p.Id, &p.UserId, &p.Created_at, &p.Title, &p.Text, &p.Image); err != nil {
 			return nil, fmt.Errorf("GetFiltrtPOst scan error: %v", err)
 		}
 
@@ -240,6 +241,7 @@ func GetPostsOptimized() ([]Post, error) {
 			p.created_at,
 			p.title,
 			p.text,
+			p.image,
 			COALESCE(GROUP_CONCAT(c.name, ','), '') as categories
 		FROM posts p
 		LEFT JOIN post_category pc ON p.id = pc.post_id
@@ -256,7 +258,7 @@ func GetPostsOptimized() ([]Post, error) {
 		var p Post
 		var categoriesStr string
 
-		if err := rows.Scan(&p.Id, &p.UserId, &p.Created_at, &p.Title, &p.Text, &categoriesStr); err != nil {
+		if err := rows.Scan(&p.Id, &p.UserId, &p.Created_at, &p.Title, &p.Text, &categoriesStr, &p.Image); err != nil {
 			return nil, fmt.Errorf("GetPostsOptimized scan error: %v", err)
 		}
 

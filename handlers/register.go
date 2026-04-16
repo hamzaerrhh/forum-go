@@ -56,11 +56,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var rules string = `
-. username :      2 ~ 50  chars
-. email (valid) : 5 ~ 100 chars
-. password :      6 ~ 20  chars`
+. username (valid) : 2 ~ 50  chars 
+. email (valid)    : 5 ~ 100 chars
+. password         : 6 ~ 20  chars`
 
-		// Input validation
 		// 1. check emptiness
 		if user.Name == "" || user.Email == "" || user.Password == "" || user.confirmPassword == "" {
 			user.Message = "All fields are required"

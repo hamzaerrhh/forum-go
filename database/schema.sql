@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS USERS (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
-    password TEXT -- nullable for auth providers
+    password TEXT NOT NULL
 );
 
 -- SESSIONS
@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS POSTS (
     created_at DATETIME NOT NULL, -- ~ 1GB
     title      TEXT     NULL    ,
     text       TEXT     NULL    ,
+    image      TEXT     NULL, 
     PRIMARY KEY (id AUTOINCREMENT),
     FOREIGN KEY (user_id) REFERENCES USERS (id) ON DELETE CASCADE
 );

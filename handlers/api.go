@@ -1,7 +1,13 @@
 package handlers
 
 import (
+	"fmt"
+	"io"
+	"math/rand"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -11,18 +17,38 @@ import (
 )
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("creat a postes", r.URL.Path)
 	if r.URL.Path != "/api/posts/create" {
-		HandleError(w, http.StatusNotFound, "Page not found")
+		fmt.Println("not path")
+
+		HandleError(w, http.StatusNotFound, "Not found")
 		return
 	}
 	if r.Method != http.MethodPost {
-		HandleError(w, http.StatusMethodNotAllowed, "Method not allowed")
+		HandleError(w, http.StatusMethodNotAllowed, "Not Allowed")
+
+		return
+	}
+
+	cookie, _ := r.Cookie("session_id")
+	userId, err := api.GetUserIDFromCookie(cookie.Value)
+	if err != nil {
+		HandleError(w, http.StatusUnauthorized, "Invalid or expired session")
+		return
+	}
+	// check the size of dat entery
+	err = r.ParseMultipartForm(25 << 20) // 25 MB
+	if err != nil {
+		fmt.Println("err", err)
+		HandleError(w, http.StatusBadRequest, "error data")
+
 		return
 	}
 
 	title := strings.TrimSpace(r.FormValue("title"))
 	text := strings.TrimSpace(r.FormValue("text"))
 	categories := r.Form["categories"]
+	// file
 
 	if title == "" || text == "" {
 		HandleError(w, http.StatusBadRequest, "Title and text cannot be empty")
@@ -37,13 +63,23 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		HandleError(w, http.StatusBadRequest, "At least one category must be selected")
 		return
 	}
-
-	cookie, _ := r.Cookie("session_id")
-	userId, err := api.GetUserIDFromCookie(cookie.Value)
+	// add image
+	var imageUri string // default empty
+	file, fileHeader, err := r.FormFile("image")
 	if err != nil {
-		HandleError(w, http.StatusUnauthorized, "Invalid or expired session")
-		return
+		fmt.Println("No image uploaded, continuing without it")
+	} else {
+		defer file.Close()
+		imageUri, err = SaveImage(file, fileHeader)
+		if err != nil {
+			HandleError(w, http.StatusInternalServerError, "Could not save image")
+			return
+		}
+		fmt.Println("Image uploaded:", imageUri)
 	}
+
+	fmt.Println("image uploaded", imageUri)
+
 	tx, err := database.Database.Begin()
 	if err != nil {
 		HandleError(w, http.StatusInternalServerError, "Could not create post")
@@ -52,11 +88,12 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	defer tx.Rollback()
 
 	result, err := tx.Exec(
-		"INSERT INTO posts (user_id, created_at, title, text) VALUES (?, ?, ?, ?)",
+		"INSERT INTO posts (user_id, created_at, title, text, image) VALUES (?, ?, ?, ?, ?)",
 		userId,
 		time.Now(),
 		title,
 		text,
+		imageUri,
 	)
 	if err != nil {
 		HandleError(w, http.StatusInternalServerError, "Could not create post")
@@ -270,4 +307,34 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 	default:
 		HandleError(w, http.StatusNotFound, "Unknown endpoint")
 	}
+}
+
+func SaveImage(file io.Reader, fileHeader *multipart.FileHeader) (string, error) {
+	// Ensure uploads directory exists
+	err := os.MkdirAll("./uploads", os.ModePerm)
+	if err != nil {
+		return "", fmt.Errorf("unable to create uploads directory: %w", err)
+	}
+
+	// Generate a unique filename (e.g., using timestamp + random number)
+	rand.Seed(time.Now().UnixNano())
+	ext := filepath.Ext(fileHeader.Filename) // keep original extension
+	newName := fmt.Sprintf("%d_%d%s", time.Now().UnixNano(), rand.Intn(10000), ext)
+	filePath := filepath.Join("./uploads", newName)
+
+	// Create destination file
+	dst, err := os.Create(filePath)
+	if err != nil {
+		return "", fmt.Errorf("unable to create file: %w", err)
+	}
+	defer dst.Close()
+
+	// Copy the uploaded content to the destination file
+	_, err = io.Copy(dst, file)
+	if err != nil {
+		return "", fmt.Errorf("unable to save file: %w", err)
+	}
+
+	// Return the relative URL/path for DB insertion
+	return "/uploads/" + newName, nil
 }
