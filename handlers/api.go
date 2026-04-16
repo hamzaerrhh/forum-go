@@ -37,6 +37,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// check the size of dat entery
+
 	err = r.ParseMultipartForm(25 << 20) // 25 MB
 	if err != nil {
 		fmt.Println("err", err)
@@ -65,6 +66,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 	// add image
 	var imageUri string // default empty
+
 	file, fileHeader, err := r.FormFile("image")
 	if err != nil {
 		fmt.Println("No image uploaded, continuing without it")
@@ -75,10 +77,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			HandleError(w, http.StatusInternalServerError, "Could not save image")
 			return
 		}
-		fmt.Println("Image uploaded:", imageUri)
 	}
-
-	fmt.Println("image uploaded", imageUri)
 
 	tx, err := database.Database.Begin()
 	if err != nil {
@@ -316,20 +315,19 @@ func SaveImage(file io.Reader, fileHeader *multipart.FileHeader) (string, error)
 		return "", fmt.Errorf("unable to create uploads directory: %w", err)
 	}
 
-	// Generate a unique filename (e.g., using timestamp + random number)
-	rand.Seed(time.Now().UnixNano())
+	// rand.Seed(time.Now().UnixNano())
 	ext := filepath.Ext(fileHeader.Filename) // keep original extension
 	newName := fmt.Sprintf("%d_%d%s", time.Now().UnixNano(), rand.Intn(10000), ext)
 	filePath := filepath.Join("./uploads", newName)
 
 	// Create destination file
+
 	dst, err := os.Create(filePath)
 	if err != nil {
 		return "", fmt.Errorf("unable to create file: %w", err)
 	}
 	defer dst.Close()
 
-	// Copy the uploaded content to the destination file
 	_, err = io.Copy(dst, file)
 	if err != nil {
 		return "", fmt.Errorf("unable to save file: %w", err)

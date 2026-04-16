@@ -1045,15 +1045,21 @@ textarea {
 .image-preview {
   border: 1px solid var(--border);
   background: var(--bg);
-  width: 300px;            /* fixed width */
-  height: 200px;           /* fixed height */
+  aspect-ratio: 1 / 1;       /* 🔥 key fix: always square */
+  width: 50%;            /* fixed width */
+  height: 50%;           /* fixed height */
+  max-height: 300px;
   border-radius: var(--radius);
   display: flex;
+    object-fit: cover;
+
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
 }
+
+
 
 /* Placeholder text */
 .image-preview .placeholder {
@@ -1092,9 +1098,9 @@ textarea {
 /* Optional: center preview on small screens */
 @media (max-width: 480px) {
   .image-preview {
-    width: 100%;           /* optional: fit mobile screen */
     max-width: 300px;      /* maintain max width */
-    height: 200px;         /* fixed height */
     margin: 0 auto;
+      width: 100%;
+  height: 100%;
   }
 }
