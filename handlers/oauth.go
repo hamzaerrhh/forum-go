@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -26,6 +27,7 @@ func OAuthLogin(w http.ResponseWriter, r *http.Request) {
 	var baseURL, client_id, scope string
 
 	provider := r.PathValue("provider")
+	fmt.Println("provdi", provider)
 	switch provider {
 	case "google":
 		baseURL = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -39,6 +41,7 @@ func OAuthLogin(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		HandleError(w, http.StatusNotFound, "Unknown endpoint")
+		return
 	}
 
 	// Generate a random state token to prevent CSRF

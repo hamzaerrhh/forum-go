@@ -27,9 +27,14 @@ func Init() error {
 		return fmt.Errorf("can't read schema: %v", err)
 	}
 
-	_, err = Database.Exec(string(schema)) // seeder
+	_, err = Database.Exec(string(schema))
 	if err != nil {
 		return fmt.Errorf("schema execution failed: %v", err)
+	}
+
+	// Seed the database with fake data
+	if err := SeedDatabase(); err != nil {
+		return fmt.Errorf("database seeding failed: %v", err)
 	}
 
 	return nil

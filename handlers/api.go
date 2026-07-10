@@ -304,19 +304,36 @@ func CommentResolver(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveImage(file io.Reader, fileHeader *multipart.FileHeader) (string, error) {
+	// Validate file extension
+	allowedExtensions := map[string]bool{
+		".jpg":  true,
+		".jpeg": true,
+		".png":  true,
+		".gif":  true,
+		".webp": true,
+	}
+
+	ext := strings.ToLower(filepath.Ext(fileHeader.Filename))
+	if !allowedExtensions[ext] {
+		return "", fmt.Errorf("invalid image extension: %s. Allowed: jpg, jpeg, png, gif, webp", ext)
+	}
+
+	// Validate file size (5 MB limit)
+	const maxFileSize = 5 * 1024 * 1024 // 5 MB
+	if fileHeader.Size > maxFileSize {
+		return "", fmt.Errorf("image file too large: %d bytes (max 5 MB)", fileHeader.Size)
+	}
+
 	// Ensure uploads directory exists
 	err := os.MkdirAll("./uploads", os.ModePerm)
 	if err != nil {
 		return "", fmt.Errorf("unable to create uploads directory: %w", err)
 	}
 
-	// rand.Seed(time.Now().UnixNano())
-	ext := filepath.Ext(fileHeader.Filename) // keep original extension
 	newName := fmt.Sprintf("%d_%d%s", time.Now().UnixNano(), rand.Intn(10000), ext)
 	filePath := filepath.Join("./uploads", newName)
 
 	// Create destination file
-
 	dst, err := os.Create(filePath)
 	if err != nil {
 		return "", fmt.Errorf("unable to create file: %w", err)

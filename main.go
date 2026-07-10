@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -59,5 +60,6 @@ func InitEnviron() error {
 	handlers.GOOGLE_CLIENT_SECRET = os.Getenv("GOOGLE_CLIENT_SECRET")
 	handlers.GITHUB_CLIENT_ID = os.Getenv("GITHUB_CLIENT_ID")
 	handlers.GITHUB_CLIENT_SECRET = os.Getenv("GITHUB_CLIENT_SECRET")
+	fmt.Println(os.Getenv("GOOGLE_CLIENT_ID"))
 	return nil
 }
